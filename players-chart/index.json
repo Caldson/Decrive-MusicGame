@@ -1,7 +1,21 @@
 {
     "version": 1,
-    "updatedAt": "2026-10-17T11:56:21.483Z",
+    "updatedAt": "2026-10-17T11:59:12.693Z",
     "charts": [
+        {
+            "id": "cmvccfpu58qvs",
+            "folder": "4k轮指测试-75bpm-u58qvs",
+            "title": "4K轮指测试 75BPM",
+            "artist": "Minecraft 乄 咖咯德苏林",
+            "bpm": 75,
+            "meter": "4/4",
+            "difficulty": 7.5,
+            "noteCount": 77,
+            "author": "匿名玩家",
+            "music": null,
+            "createdAt": "2026-10-17T11:59:12.693Z",
+            "size": 1001182
+        },
         {
             "id": "cmvccc2gjxwk9",
             "folder": "4k轮指测试-60bpm-gjxwk9",
