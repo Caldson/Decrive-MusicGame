@@ -1,0 +1,319 @@
+{
+  "id": "player-mvccciuu-zsox1",
+  "title": "4K轮指测试 300BPM",
+  "artist": "Minecraft 乄 咖咯德苏林",
+  "bpm": 300,
+  "meter": "4/4",
+  "difficulty": 15,
+  "offsetMs": 0,
+  "notes": [
+    {
+      "timeMs": 0,
+      "lane": 0
+    },
+    {
+      "timeMs": 200,
+      "lane": 1
+    },
+    {
+      "timeMs": 400,
+      "lane": 2
+    },
+    {
+      "timeMs": 600,
+      "lane": 3
+    },
+    {
+      "timeMs": 650,
+      "lane": 2
+    },
+    {
+      "timeMs": 700,
+      "lane": 1
+    },
+    {
+      "timeMs": 750,
+      "lane": 0
+    },
+    {
+      "timeMs": 800,
+      "lane": 0
+    },
+    {
+      "timeMs": 850,
+      "lane": 1
+    },
+    {
+      "timeMs": 900,
+      "lane": 2
+    },
+    {
+      "timeMs": 950,
+      "lane": 3
+    },
+    {
+      "timeMs": 1000,
+      "lane": 2
+    },
+    {
+      "timeMs": 1050,
+      "lane": 1
+    },
+    {
+      "timeMs": 1100,
+      "lane": 0
+    },
+    {
+      "timeMs": 1600,
+      "lane": 0
+    },
+    {
+      "timeMs": 1700,
+      "lane": 1
+    },
+    {
+      "timeMs": 1800,
+      "lane": 2
+    },
+    {
+      "timeMs": 1900,
+      "lane": 3
+    },
+    {
+      "timeMs": 2000,
+      "lane": 2
+    },
+    {
+      "timeMs": 2100,
+      "lane": 1
+    },
+    {
+      "timeMs": 2200,
+      "lane": 0
+    },
+    {
+      "timeMs": 2300,
+      "lane": 1
+    },
+    {
+      "timeMs": 2400,
+      "lane": 2
+    },
+    {
+      "timeMs": 2500,
+      "lane": 3
+    },
+    {
+      "timeMs": 2600,
+      "lane": 2
+    },
+    {
+      "timeMs": 2700,
+      "lane": 1
+    },
+    {
+      "timeMs": 2800,
+      "lane": 0
+    },
+    {
+      "timeMs": 2900,
+      "lane": 1
+    },
+    {
+      "timeMs": 3000,
+      "lane": 2
+    },
+    {
+      "timeMs": 3100,
+      "lane": 3
+    },
+    {
+      "timeMs": 3200,
+      "lane": 2
+    },
+    {
+      "timeMs": 3300,
+      "lane": 1
+    },
+    {
+      "timeMs": 3400,
+      "lane": 0
+    },
+    {
+      "timeMs": 3500,
+      "lane": 1
+    },
+    {
+      "timeMs": 3600,
+      "lane": 2
+    },
+    {
+      "timeMs": 3700,
+      "lane": 3
+    },
+    {
+      "timeMs": 3800,
+      "lane": 2
+    },
+    {
+      "timeMs": 3900,
+      "lane": 1
+    },
+    {
+      "timeMs": 4000,
+      "lane": 0
+    },
+    {
+      "timeMs": 4100,
+      "lane": 0
+    },
+    {
+      "timeMs": 4200,
+      "lane": 0
+    },
+    {
+      "timeMs": 4300,
+      "lane": 0
+    },
+    {
+      "timeMs": 4400,
+      "lane": 0
+    },
+    {
+      "timeMs": 4500,
+      "lane": 0
+    },
+    {
+      "timeMs": 4600,
+      "lane": 0
+    },
+    {
+      "timeMs": 4700,
+      "lane": 0
+    },
+    {
+      "timeMs": 4800,
+      "lane": 1
+    },
+    {
+      "timeMs": 4900,
+      "lane": 1
+    },
+    {
+      "timeMs": 5000,
+      "lane": 1
+    },
+    {
+      "timeMs": 5100,
+      "lane": 1
+    },
+    {
+      "timeMs": 5200,
+      "lane": 1
+    },
+    {
+      "timeMs": 5300,
+      "lane": 1
+    },
+    {
+      "timeMs": 5400,
+      "lane": 1
+    },
+    {
+      "timeMs": 5500,
+      "lane": 1
+    },
+    {
+      "timeMs": 5600,
+      "lane": 2
+    },
+    {
+      "timeMs": 5700,
+      "lane": 2
+    },
+    {
+      "timeMs": 5800,
+      "lane": 2
+    },
+    {
+      "timeMs": 5900,
+      "lane": 2
+    },
+    {
+      "timeMs": 6000,
+      "lane": 2
+    },
+    {
+      "timeMs": 6100,
+      "lane": 2
+    },
+    {
+      "timeMs": 6200,
+      "lane": 2
+    },
+    {
+      "timeMs": 6300,
+      "lane": 2
+    },
+    {
+      "timeMs": 6400,
+      "lane": 3
+    },
+    {
+      "timeMs": 6500,
+      "lane": 3
+    },
+    {
+      "timeMs": 6600,
+      "lane": 3
+    },
+    {
+      "timeMs": 6700,
+      "lane": 3
+    },
+    {
+      "timeMs": 6800,
+      "lane": 3
+    },
+    {
+      "timeMs": 6900,
+      "lane": 3
+    },
+    {
+      "timeMs": 7000,
+      "lane": 3
+    },
+    {
+      "timeMs": 7100,
+      "lane": 3
+    },
+    {
+      "timeMs": 7200,
+      "lane": 2
+    },
+    {
+      "timeMs": 7200,
+      "lane": 3
+    },
+    {
+      "timeMs": 7300,
+      "lane": 1
+    },
+    {
+      "timeMs": 7300,
+      "lane": 2
+    },
+    {
+      "timeMs": 7400,
+      "lane": 0
+    },
+    {
+      "timeMs": 7400,
+      "lane": 1
+    },
+    {
+      "timeMs": 7500,
+      "lane": 1
+    }
+  ]
+}
