@@ -1,0 +1,295 @@
+{
+  "id": "player-mvcaswnx-gqm9k",
+  "title": "MOST FXXKING CHART",
+  "artist": "DECRIVE STUDIO",
+  "bpm": 300,
+  "meter": "7/8",
+  "difficulty": 3.4,
+  "offsetMs": 0,
+  "notes": [
+    {
+      "timeMs": 0,
+      "lane": 1
+    },
+    {
+      "timeMs": 50,
+      "lane": 0
+    },
+    {
+      "timeMs": 100,
+      "lane": 2
+    },
+    {
+      "timeMs": 150,
+      "lane": 3
+    },
+    {
+      "timeMs": 200,
+      "lane": 1
+    },
+    {
+      "timeMs": 250,
+      "lane": 2
+    },
+    {
+      "timeMs": 300,
+      "lane": 3
+    },
+    {
+      "timeMs": 350,
+      "lane": 1
+    },
+    {
+      "timeMs": 400,
+      "lane": 3
+    },
+    {
+      "timeMs": 450,
+      "lane": 0
+    },
+    {
+      "timeMs": 500,
+      "lane": 2
+    },
+    {
+      "timeMs": 550,
+      "lane": 1
+    },
+    {
+      "timeMs": 600,
+      "lane": 0
+    },
+    {
+      "timeMs": 650,
+      "lane": 3
+    },
+    {
+      "timeMs": 700,
+      "lane": 1
+    },
+    {
+      "timeMs": 750,
+      "lane": 2
+    },
+    {
+      "timeMs": 800,
+      "lane": 0
+    },
+    {
+      "timeMs": 850,
+      "lane": 1
+    },
+    {
+      "timeMs": 900,
+      "lane": 3
+    },
+    {
+      "timeMs": 950,
+      "lane": 2
+    },
+    {
+      "timeMs": 1000,
+      "lane": 3
+    },
+    {
+      "timeMs": 1050,
+      "lane": 0
+    },
+    {
+      "timeMs": 1100,
+      "lane": 2
+    },
+    {
+      "timeMs": 1150,
+      "lane": 1
+    },
+    {
+      "timeMs": 1200,
+      "lane": 3
+    },
+    {
+      "timeMs": 1250,
+      "lane": 2
+    },
+    {
+      "timeMs": 1300,
+      "lane": 0
+    },
+    {
+      "timeMs": 1350,
+      "lane": 3
+    },
+    {
+      "timeMs": 1400,
+      "lane": 1
+    },
+    {
+      "timeMs": 1450,
+      "lane": 2
+    },
+    {
+      "timeMs": 1500,
+      "lane": 3
+    },
+    {
+      "timeMs": 1550,
+      "lane": 0
+    },
+    {
+      "timeMs": 1600,
+      "lane": 2
+    },
+    {
+      "timeMs": 1650,
+      "lane": 3
+    },
+    {
+      "timeMs": 1700,
+      "lane": 1
+    },
+    {
+      "timeMs": 1750,
+      "lane": 2
+    },
+    {
+      "timeMs": 1800,
+      "lane": 0
+    },
+    {
+      "timeMs": 1850,
+      "lane": 3
+    },
+    {
+      "timeMs": 1900,
+      "lane": 1
+    },
+    {
+      "timeMs": 1950,
+      "lane": 2
+    },
+    {
+      "timeMs": 2000,
+      "lane": 3
+    },
+    {
+      "timeMs": 2050,
+      "lane": 0
+    },
+    {
+      "timeMs": 2100,
+      "lane": 2
+    },
+    {
+      "timeMs": 2150,
+      "lane": 1
+    },
+    {
+      "timeMs": 2200,
+      "lane": 3
+    },
+    {
+      "timeMs": 2250,
+      "lane": 2
+    },
+    {
+      "timeMs": 2300,
+      "lane": 0
+    },
+    {
+      "timeMs": 2350,
+      "lane": 3
+    },
+    {
+      "timeMs": 2400,
+      "lane": 1
+    },
+    {
+      "timeMs": 2450,
+      "lane": 3
+    },
+    {
+      "timeMs": 2500,
+      "lane": 2
+    },
+    {
+      "timeMs": 2550,
+      "lane": 1
+    },
+    {
+      "timeMs": 2600,
+      "lane": 0
+    },
+    {
+      "timeMs": 2650,
+      "lane": 2
+    },
+    {
+      "timeMs": 2700,
+      "lane": 3
+    },
+    {
+      "timeMs": 2750,
+      "lane": 1
+    },
+    {
+      "timeMs": 2800,
+      "lane": 2
+    },
+    {
+      "timeMs": 2850,
+      "lane": 0
+    },
+    {
+      "timeMs": 2900,
+      "lane": 3
+    },
+    {
+      "timeMs": 2950,
+      "lane": 1
+    },
+    {
+      "timeMs": 3000,
+      "lane": 3
+    },
+    {
+      "timeMs": 3050,
+      "lane": 0
+    },
+    {
+      "timeMs": 3100,
+      "lane": 2
+    },
+    {
+      "timeMs": 3150,
+      "lane": 1
+    },
+    {
+      "timeMs": 3200,
+      "lane": 3
+    },
+    {
+      "timeMs": 3250,
+      "lane": 0
+    },
+    {
+      "timeMs": 3300,
+      "lane": 2
+    },
+    {
+      "timeMs": 3350,
+      "lane": 3
+    },
+    {
+      "timeMs": 3400,
+      "lane": 1
+    },
+    {
+      "timeMs": 3450,
+      "lane": 2
+    },
+    {
+      "timeMs": 3500,
+      "lane": 0
+    }
+  ]
+}
