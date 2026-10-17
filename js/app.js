@@ -2,6 +2,7 @@
   "use strict";
 
   const MAX_PACKAGE_SIZE = 100 * 1024 * 1024;
+  const COMMUNITY_PACKAGE_LIMIT = 8 * 1024 * 1024;
   const DB_NAME = "beat-shift-library";
   const DB_STORE = "packages";
   const OFFICIAL_CHART_BACKGROUND = "./offical-chart/Neon%20Afterglow/bg.png";
@@ -75,7 +76,7 @@
   const readStored = async key => databaseAction("readonly", store => store.get(key));
   const writeStored = async (key, value) => databaseAction("readwrite", store => store.put(value, key));
 
-  const saveChartFilesToDirectory = async (directory, chart, entries = null, media = null) => {
+  const buildPackageEntries = async (chart, entries = null, media = null, sizeLimit = MAX_PACKAGE_SIZE) => {
     const files = new Map();
     if (entries) {
       for (const entry of entries) {
@@ -93,7 +94,14 @@
       files.set(`music.${extensionFor(media.musicName, media.music.type)}`, new Uint8Array(await media.music.arrayBuffer()));
     }
     const totalSize = [...files.values()].reduce((size, data) => size + (data.byteLength ?? data.size), 0);
-    if (totalSize > MAX_PACKAGE_SIZE) throw new Error("谱面包素材总大小超过 100 MB 限制。");
+    if (totalSize > sizeLimit) {
+      throw new Error(`谱面包素材总大小 ${(totalSize / 1048576).toFixed(1)} MB，超过 ${(sizeLimit / 1048576).toFixed(0)} MB 限制。`);
+    }
+    return files;
+  };
+
+  const saveChartFilesToDirectory = async (directory, chart, entries = null, media = null) => {
+    const files = await buildPackageEntries(chart, entries, media);
     const folderName = `${cleanFilename(chart.title)}-${String(chart.id || Date.now()).slice(-6)}`;
     const chartDirectory = await directory.getDirectoryHandle(folderName, {create:true});
     for (const [name, data] of files) {
@@ -311,7 +319,7 @@
   };
 
   const savePlayerIndex = () => {
-    localStorage.setItem("beat-shift-player-charts", JSON.stringify(playerCharts.map(({id,title,artist,bpm,meter,difficulty,noteCount}) => ({id,title,artist,bpm,meter,difficulty,noteCount}))));
+    localStorage.setItem("beat-shift-player-charts", JSON.stringify(playerCharts.map(({id,sourceId,author,title,artist,bpm,meter,difficulty,noteCount}) => ({id,sourceId,author,title,artist,bpm,meter,difficulty,noteCount}))));
     $("#playerCount").textContent = String(playerCharts.length).padStart(2,"0");
     $("#playerCountLabel").textContent = `( ${String(playerCharts.length).padStart(2,"0")} )`;
   };
@@ -360,8 +368,16 @@
       play.addEventListener("click", () => launchStoredChart(chart.id));
       const share = document.createElement("button");
       share.className = "small-play";
-      share.textContent = "保存到 players-chart";
-      share.addEventListener("click", () => writeChartToPlayersFolder(chart.id));
+      if (chart.sourceId) {
+        share.textContent = "来自社区";
+        share.disabled = true;
+      } else {
+        share.textContent = "上传到社区";
+        share.addEventListener("click", () => {
+          if (window.DecriveCommunity) window.DecriveCommunity.uploadStoredChart(chart.id);
+          else writeChartToPlayersFolder(chart.id);
+        });
+      }
       actions.append(play, share);
       card.append(art, details, difficulty, actions);
       list.append(card);
@@ -524,7 +540,10 @@
     }
   };
 
-  $("#uploadChart").addEventListener("click", () => writeChartToPlayersFolder("editor"));
+  $("#uploadChart").addEventListener("click", () => {
+    if (window.DecriveCommunity) window.DecriveCommunity.uploadFromEditor();
+    else writeChartToPlayersFolder("editor");
+  });
 
   let editorNotes = [];
   let editorPlayhead = 0;
@@ -1374,6 +1393,65 @@
     }
   });
   document.addEventListener("keyup", event => pressedKeys.delete(event.key.toLowerCase()));
+
+  /* ---------- 供社区模块（js/community.js）调用的桥接接口 ---------- */
+
+  window.DecriveLibrary = {
+    async packageFromEditor() {
+      const chart = currentEditorChart();
+      if (!chart.notes.length) throw new Error("谱面还没有任何音符，先放几个再上传。");
+      const files = await buildPackageEntries(chart, null, editorMedia, COMMUNITY_PACKAGE_LIMIT);
+      return { chart, entries: [...files.entries()].map(([name, data]) => ({name, data})) };
+    },
+
+    async packageFromStored(id) {
+      const record = await readStored(id);
+      if (!record) throw new Error("找不到这份谱面，请重新导入。");
+      const files = await buildPackageEntries(record.chart, record.entries, null, COMMUNITY_PACKAGE_LIMIT);
+      return { chart: record.chart, entries: [...files.entries()].map(([name, data]) => ({name, data})) };
+    },
+
+    async install({ chart: rawChart, entries, sourceId, author }) {
+      const chart = normalizeChart(rawChart);
+      const packageId = `community-${sourceId}`;
+      chart.id = packageId;
+      const record = {
+        id: packageId,
+        sourceId,
+        author: String(author || ""),
+        title: chart.title,
+        artist: chart.artist,
+        bpm: chart.bpm,
+        meter: chart.meter,
+        difficulty: chart.difficulty,
+        noteCount: chart.notes.length,
+        chart,
+        entries
+      };
+      await writeStored(packageId, record);
+      playerCharts = [{...record, entries: undefined}, ...playerCharts.filter(item => item.id !== packageId)];
+      savePlayerIndex();
+      renderPlayers();
+      return record;
+    },
+
+    hasSource(sourceId) {
+      return playerCharts.some(item => item.sourceId === sourceId);
+    },
+
+    removeSource(sourceId) {
+      const target = playerCharts.find(item => item.sourceId === sourceId);
+      if (!target) return false;
+      playerCharts = playerCharts.filter(item => item.id !== target.id);
+      databaseAction("readwrite", store => store.delete(target.id)).catch(() => {});
+      savePlayerIndex();
+      renderPlayers();
+      return true;
+    },
+
+    notify,
+    reloadPlayers: loadPlayers
+  };
 
   const init = async () => {
     readSettings();

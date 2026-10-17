@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>secure.json 生成器 | Decrive</title>
+  <link rel="stylesheet" href="./css/app.css">
+  <style>
+    body{padding:40px 20px;display:flex;justify-content:center}
+    .tool{width:100%;max-width:620px;padding:26px;border:1px solid #272c39;border-radius:10px;background:#10131c}
+    .tool h1{margin:0 0 6px;font-size:18px}
+    .tool p{margin:0 0 16px;color:#7d8497;font-size:12px;line-height:1.7}
+    .tool label{display:block;margin-bottom:6px;color:#8d95a8;font-size:11px}
+    .tool input,.tool textarea{width:100%;padding:10px 12px;border:1px solid #262c3c;border-radius:8px;background:#0d1018;color:#f1f3fa;font:12px/1.6 var(--mono)}
+    .tool textarea{min-height:150px;resize:vertical}
+    .tool .row{display:flex;gap:10px;margin:14px 0}
+    .tool button{height:34px;padding:0 16px;border:1px solid #2f6f67;border-radius:9px;background:linear-gradient(150deg,#1c4a44,#123029);color:var(--cyan);font-size:12px;font-weight:700;cursor:pointer}
+    .tool button.ghost{border-color:#262c3c;background:#141926;color:#a7b0c2;font-weight:600}
+    .tool .hint{color:#6f7789;font-size:11px;line-height:1.7;margin-top:10px}
+    .tool .warn{color:#ffdb83}
+  </style>
+</head>
+<body>
+  <main class="tool">
+    <h1>secure.json 生成器</h1>
+    <p>把 GitHub Personal Access Token 加密成 <code>secure.json</code>，供社区曲库上传使用。加密用的是 PBKDF2-SHA256 + AES-GCM，密钥与 Vitual XRing 共用，所以也能用 <a href="https://xsmmc.caldson.us.ci/crypto.html" target="_blank" rel="noreferrer">xsmmc.caldson.us.ci/crypto.html</a> 生成，结果一致。</p>
+
+    <label for="token">GitHub token（需要 Caldson/Decrive-MusicGame 的 Contents: Read and write）</label>
+    <input id="token" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_...">
+
+    <div class="row">
+      <button id="generate" type="button">生成 secure.json</button>
+      <button id="copy" class="ghost" type="button">复制</button>
+    </div>
+
+    <label for="output">结果（覆盖仓库根目录的 secure.json）</label>
+    <textarea id="output" readonly placeholder="点“生成”后显示在这里"></textarea>
+
+    <p class="hint warn">密钥内嵌在前端，等于公开：任何人都能解出这个 token。请只授予单个仓库的 Contents 读写权限，并设置过期时间。</p>
+    <p class="hint">生成完记得 commit secure.json，然后刷新游戏页面。</p>
+  </main>
+
+  <script src="./js/decrive-crypto.js"></script>
+  <script>
+    const REPO = "Caldson/Decrive-MusicGame";
+    const tokenInput = document.getElementById("token");
+    const output = document.getElementById("output");
+
+    document.getElementById("generate").addEventListener("click", async () => {
+      const token = tokenInput.value.trim();
+      if (!token) { output.value = "请先填写 token。"; return; }
+      output.value = "加密中…";
+      try {
+        const box = await window.SecureBox.encrypt(token);
+        const config = {
+          repo: REPO,
+          branch: "main",
+          path: "players-chart/index.json",
+          kdf: box.kdf,
+          iterations: box.iterations,
+          salt: box.salt,
+          iv: box.iv,
+          ciphertext: box.ciphertext
+        };
+        output.value = JSON.stringify(config, null, 4);
+      } catch (error) {
+        output.value = `生成失败：${error.message}`;
+      }
+    });
+
+    document.getElementById("copy").addEventListener("click", async () => {
+      if (!output.value) return;
+      try {
+        await navigator.clipboard.writeText(output.value);
+        output.value = `${output.value}\n`;
+        document.getElementById("copy").textContent = "已复制";
+        window.setTimeout(() => { document.getElementById("copy").textContent = "复制"; }, 1500);
+      } catch (error) {
+        output.focus();
+        output.select();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -63,3 +63,11 @@
 .timeline-note.selected{box-shadow:0 0 0 2px #ffdb83}
 .timeline-ruler{cursor:pointer}
 .icon-button.active{border-color:#3f7f76;color:var(--cyan)}
+/* ===== 社区曲库 ===== */
+.community-title{margin-top:26px}
+.community-title .section-aside{display:flex;align-items:center;gap:10px;color:#7d8497;font-size:9px}
+.community-refresh{background:none;border:none;color:var(--cyan);font-size:9px;letter-spacing:.3px;cursor:pointer;padding:0}
+.community-refresh:hover{color:#a6f4e5}
+.community-meta{display:block;margin-top:3px;color:#666e80;font:8px var(--mono);letter-spacing:.4px}
+.community-card .player-art{background:linear-gradient(150deg,#1b2b3a,#131a26);color:var(--cyan)}
+.community-card .small-play:disabled{opacity:.55;cursor:default}
