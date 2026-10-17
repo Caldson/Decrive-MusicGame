@@ -22,28 +22,6 @@
 .profile.guest strong{color:#9aa2b5}
 .profile .more{font:10px var(--mono);letter-spacing:.4px;color:var(--yellow)}
 .profile .more[hidden]{display:none}
-.vtx-modal{position:fixed;z-index:40;inset:0;display:grid;place-items:center;padding:20px;background:rgba(5,7,12,.72);backdrop-filter:blur(6px)}
-.vtx-modal[hidden]{display:none}
-.vtx-modal-card{width:100%;max-width:352px;padding:22px 22px 18px;border:1px solid #252b3a;border-radius:16px;background:linear-gradient(165deg,#141826,#0d1017);box-shadow:0 30px 70px rgba(0,0,0,.55)}
-.vtx-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.vtx-modal-head h2{margin:0;font-size:15px;letter-spacing:.2px}
-.vtx-modal-close{width:24px;height:24px;border:none;border-radius:7px;background:#1b2130;color:#96a0b3;font-size:15px;line-height:1;cursor:pointer}
-.vtx-modal-close:hover{color:var(--text)}
-.vtx-modal-desc{margin:7px 0 14px;color:#7d8497;font-size:10.5px;line-height:1.65}
-.vtx-field{display:block;margin-bottom:11px}
-.vtx-field[hidden]{display:none}
-.vtx-field span{display:block;margin-bottom:5px;color:#8d95a8;font-size:9.5px;letter-spacing:.3px}
-.vtx-field input{width:100%;height:34px;padding:0 11px;border:1px solid #262c3c;border-radius:9px;background:#0d1018;color:var(--text);font-size:12px;transition:border-color .16s,box-shadow .16s}
-.vtx-field input:focus{outline:none;border-color:#3f7f76;box-shadow:0 0 0 3px rgba(112,230,208,.1)}
-.vtx-modal-message{min-height:16px;margin:2px 0 10px;color:#f87f88;font-size:9.5px;line-height:1.6}
-.vtx-modal-message.ok{color:var(--cyan)}
-.vtx-modal-actions{display:flex;gap:8px}
-.vtx-modal-ghost,.vtx-modal-primary{flex:1;height:34px;border-radius:9px;font-size:11px;letter-spacing:.3px;cursor:pointer;transition:border-color .16s,filter .16s,opacity .16s}
-.vtx-modal-ghost{border:1px solid #262c3c;background:#141926;color:#a7b0c2}
-.vtx-modal-ghost:hover{border-color:#3a4257}
-.vtx-modal-primary{border:1px solid #2f6f67;background:linear-gradient(150deg,#1c4a44,#123029);color:var(--cyan);font-weight:700}
-.vtx-modal-primary:hover:not(:disabled){filter:brightness(1.14)}
-.vtx-modal-primary:disabled{opacity:.55;cursor:not-allowed}
 /* ===== 制谱器时间轴增强 ===== */
 .timeline-header{gap:10px}
 .timeline-tools{display:flex;align-items:center;gap:9px}
@@ -87,3 +65,14 @@
 .official-item:hover .official-item-play,.official-item.active .official-item-play{opacity:1}
 .feature-art.has-image{background-size:cover;background-position:center}
 .feature-art.has-image .art-orbit,.feature-art.has-image .art-soundwave{opacity:.4}
+/* ===== VTX 内嵌窗口（登录 / 付款） ===== */
+.vtx-embed{position:fixed;z-index:60;inset:0;display:grid;place-items:center;padding:20px;background:rgba(5,7,12,.74);backdrop-filter:blur(6px)}
+.vtx-embed-card{display:flex;flex-direction:column;width:100%;max-width:460px;height:min(720px,calc(100vh - 40px));border:1px solid #252b3a;border-radius:16px;background:#0d1017;box-shadow:0 30px 70px rgba(0,0,0,.6);overflow:hidden}
+.vtx-embed-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 13px;border-bottom:1px solid #1e2331;background:#11151f}
+.vtx-embed-head strong{font-size:12px;letter-spacing:.3px;color:#d7dce8}
+.vtx-embed-actions{display:flex;align-items:center;gap:8px}
+.vtx-embed-actions a{color:var(--cyan);font-size:9.5px;text-decoration:none;letter-spacing:.3px}
+.vtx-embed-actions a:hover{text-decoration:underline}
+.vtx-embed-actions button{width:24px;height:24px;border:none;border-radius:7px;background:#1b2130;color:#96a0b3;font-size:15px;line-height:1;cursor:pointer}
+.vtx-embed-actions button:hover{color:var(--text)}
+.vtx-embed-card iframe{flex:1;width:100%;border:0;background:#f4f7fb}

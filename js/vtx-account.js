@@ -1,18 +1,26 @@
 /*
  * Decrive × Vitual XRing 账户适配
- * - 登录后侧边栏显示 VTX 用户名与余额
+ * - 登录走 API_LOGIN.html（支持登录与创建账户）
+ * - 付款走 API_VTXPAY.html（输密码确认）
  * - 成绩写入账户 data（未登录不写）
- * - 5.00 VTX 购买「全 PERFECT」道具，一个谱面内全部判定为 CERT PERFECT
  * 依赖 https://xsmmc.caldson.us.ci/vtx-sdk.js（暴露 window.VTX）
  */
 (() => {
   "use strict";
 
+  const params = new URLSearchParams(window.location.search);
   const API_BASE = String(
     window.DECRIVE_VTX_API ||
-    new URLSearchParams(window.location.search).get("vtx_api") ||
+    params.get("vtx_api") ||
     "https://xsmmc.caldson.us.ci"
   ).replace(/\/+$/, "");
+  const WEB_BASE = String(
+    window.DECRIVE_VTX_WEB ||
+    params.get("vtx_web") ||
+    API_BASE
+  ).replace(/\/+$/, "");
+  const LOGIN_PAGE = `${WEB_BASE}/API_LOGIN.html`;
+  const PAY_PAGE = `${WEB_BASE}/API_VTXPAY.html`;
   const BOOST_PRICE = "5.00";
   const BOOST_PARTY = "Decrive 音游";
   const BOOST_DESC = "全 PERFECT 道具 ×1";
@@ -33,7 +41,7 @@
   const $ = (id) => document.getElementById(id);
   const nodes = {};
 
-  let modalSubmit = null;
+  let embed = null;
 
   const formatMoney = (value) => {
     const amount = Number(String(value ?? "").replace(/[^0-9.-]/g, ""));
@@ -52,6 +60,18 @@
   };
 
   const sdk = () => (typeof window.VTX !== "undefined" ? window.VTX : null);
+
+  const SDK_VERSION = "4.3";
+
+  const loadSdk = () => new Promise((resolve) => {
+    if (sdk()) { resolve(true); return; }
+    const script = document.createElement("script");
+    script.src = `${WEB_BASE}/vtx-sdk.js?v=${SDK_VERSION}`;
+    script.async = true;
+    script.onload = () => resolve(Boolean(sdk()));
+    script.onerror = () => resolve(false);
+    document.head.append(script);
+  });
 
   const describeError = (error) => {
     if (!error) return "操作失败，请重试。";
@@ -143,161 +163,159 @@
     render();
   };
 
-  /* ---------- 弹窗 ---------- */
+  /* ---------- 弹窗（API_LOGIN.html / API_VTXPAY.html） ---------- */
 
-  const closeModal = () => {
-    const modal = $("vtxModal");
-    if (!modal) return;
-    modal.hidden = true;
-    modalSubmit = null;
-    const message = $("vtxModalMessage");
-    if (message) {
-      message.textContent = "";
-      message.className = "vtx-modal-message";
-    }
+  const allowedOrigins = () => {
+    const list = new Set();
+    try { list.add(new URL(WEB_BASE).origin); } catch (error) { /* 忽略 */ }
+    try { list.add(new URL(API_BASE).origin); } catch (error) { /* 忽略 */ }
+    return list;
   };
 
-  const setModalMessage = (text, ok = false) => {
-    const message = $("vtxModalMessage");
-    if (!message) return;
-    message.textContent = text || "";
-    message.className = ok ? "vtx-modal-message ok" : "vtx-modal-message";
+  const closeEmbed = () => {
+    if (!embed) return;
+    embed.root.remove();
+    embed = null;
   };
 
-  const openModal = ({ title, desc, mode, submitLabel, onSubmit }) => {
-    const modal = $("vtxModal");
-    if (!modal) return;
+  const openEmbed = (url, title) => {
+    closeEmbed();
 
-    $("vtxModalTitle").textContent = title;
-    $("vtxModalDesc").textContent = desc || "";
-    $("vtxModalSubmit").textContent = submitLabel || "确定";
+    const root = document.createElement("div");
+    root.className = "vtx-embed";
 
-    const loginField = $("vtxLoginField");
-    const passwordLabel = $("vtxPasswordLabel");
-    if (loginField) loginField.hidden = mode !== "login";
-    if (passwordLabel) passwordLabel.textContent = mode === "login" ? "密码" : "密码（确认支付）";
+    const card = document.createElement("div");
+    card.className = "vtx-embed-card";
+    card.setAttribute("role", "dialog");
+    card.setAttribute("aria-modal", "true");
 
-    const password = $("vtxLoginPassword");
-    if (password) password.value = "";
-    if (mode === "login") {
-      const name = $("vtxLoginName");
-      if (name) name.value = "";
-    }
+    const head = document.createElement("header");
+    head.className = "vtx-embed-head";
 
-    setModalMessage("");
-    modal.hidden = false;
-    modalSubmit = onSubmit;
+    const heading = document.createElement("strong");
+    heading.textContent = title;
 
-    const focus = mode === "login" ? $("vtxLoginName") : $("vtxLoginPassword");
-    if (focus) window.setTimeout(() => focus.focus(), 40);
-  };
+    const actions = document.createElement("div");
+    actions.className = "vtx-embed-actions";
 
-  /* ---------- 操作 ---------- */
+    const external = document.createElement("a");
+    external.href = url;
+    external.target = "_blank";
+    external.rel = "noreferrer";
+    external.textContent = "在新标签打开";
 
-  const doLogin = async () => {
-    const vtx = sdk();
-    if (!vtx) {
-      setModalMessage("无法加载 VTX SDK，请检查网络后刷新页面。");
-      return;
-    }
+    const close = document.createElement("button");
+    close.type = "button";
+    close.setAttribute("aria-label", "关闭");
+    close.textContent = "×";
+    close.addEventListener("click", closeEmbed);
 
-    const login = ($("vtxLoginName").value || "").trim();
-    const password = $("vtxLoginPassword").value || "";
+    actions.append(external, close);
+    head.append(heading, actions);
 
-    if (!login || !password) {
-      setModalMessage("请填写登录账户名和密码。");
-      return;
-    }
+    const frame = document.createElement("iframe");
+    frame.src = url;
+    frame.title = title;
+    frame.setAttribute("allow", "clipboard-write");
 
-    $("vtxModalSubmit").disabled = true;
-    setModalMessage("正在登录…", true);
-
-    try {
-      const result = await vtx.login(login, password);
-      applyAccount({
-        login: result.login,
-        username: result.account.username,
-        money: result.account.money,
-        data: result.account.data
-      });
-      closeModal();
-      toast(`已登录：${state.username}`);
-    } catch (error) {
-      setModalMessage(describeError(error));
-    } finally {
-      $("vtxModalSubmit").disabled = false;
-    }
-  };
-
-  const buyBoostWithPassword = async () => {
-    const vtx = sdk();
-    if (!vtx) {
-      setModalMessage("VTX 服务未加载。");
-      return;
-    }
-
-    const password = $("vtxLoginPassword").value || "";
-    if (!password) {
-      setModalMessage("请输入密码确认支付。");
-      return;
-    }
-
-    $("vtxModalSubmit").disabled = true;
-    setModalMessage("正在支付…", true);
-
-    try {
-      const result = await vtx.pay({
-        amount: BOOST_PRICE,
-        party: BOOST_PARTY,
-        description: BOOST_DESC,
-        password
-      });
-
-      state.money = String(result.account.money ?? state.money);
-      state.data = result.account.data && typeof result.account.data === "object" ? result.account.data : state.data;
-      const next = normalizeBoost(state.boost) + 1;
-      state.boost = next;
-
-      try {
-        await persistBoost(next);
-      } catch (error) {
-        /* 写入失败不影响本局使用，下次刷新会以服务端为准 */
-      }
-
-      closeModal();
-      render();
-      toast(`购买成功，剩 ${BOOST_PRICE} VTX 已扣除（道具 ×${next}）`);
-    } catch (error) {
-      setModalMessage(describeError(error));
-    } finally {
-      $("vtxModalSubmit").disabled = false;
-    }
-  };
-
-  const openLoginModal = () => {
-    openModal({
-      title: "登录 Vitual XRing",
-      desc: "用 VTX 账户登录，同步余额与成绩。",
-      mode: "login",
-      submitLabel: "登录",
-      onSubmit: doLogin
+    card.append(head, frame);
+    root.append(card);
+    root.addEventListener("click", (event) => {
+      if (event.target === root) closeEmbed();
     });
+
+    document.body.append(root);
+    embed = { root, frame };
+    return embed;
   };
 
-  const openBuyModal = () => {
+  const embedUrl = (base, extra) => {
+    const query = new URLSearchParams({ api: API_BASE, embed: "1", ...extra });
+    return `${base}?${query.toString()}`;
+  };
+
+  const startLogin = () => {
+    if (!sdk()) {
+      toast("VTX 服务未加载，请检查网络后刷新页面。", "error");
+      return;
+    }
+    openEmbed(embedUrl(LOGIN_PAGE), "登录 / 创建账户");
+  };
+
+  const startBuy = () => {
+    if (!sdk()) {
+      toast("VTX 服务未加载，请检查网络后刷新页面。", "error");
+      return;
+    }
     if (!state.loggedIn) {
-      openLoginModal();
+      startLogin();
+      return;
+    }
+    openEmbed(embedUrl(PAY_PAGE, {
+      type: "payment",
+      party: BOOST_PARTY,
+      amount: BOOST_PRICE,
+      description: BOOST_DESC,
+      lock: "1",
+      close: "1"
+    }), "付款确认");
+  };
+
+  const handleLoginResult = result => {
+    const vtx = sdk();
+    if (!vtx || !result || !result.account) return;
+    if (result.token && typeof vtx.setToken === "function") {
+      vtx.setToken(result.token);
+    }
+    applyAccount({
+      login: result.login,
+      username: result.account.username,
+      money: result.account.money,
+      data: result.account.data
+    });
+    toast(result.created ? `账户已创建：${state.username}` : `已登录：${state.username}`);
+  };
+
+  const handlePayResult = async (data) => {
+    const account = data.account || {};
+    state.money = String(account.money ?? state.money);
+    if (account.data && typeof account.data === "object") state.data = account.data;
+
+    const next = normalizeBoost(state.boost) + 1;
+    state.boost = next;
+    render();
+
+    try {
+      await persistBoost(next);
+    } catch (error) {
+      /* 写入失败不影响本局使用，下次刷新以服务端为准 */
+    }
+
+    render();
+    toast(`购买成功，已扣除 ${BOOST_PRICE} VTX（道具 ×${next}）`);
+  };
+
+  window.addEventListener("message", (event) => {
+    const origins = allowedOrigins();
+    if (!origins.has(event.origin)) return;
+    const data = event.data;
+    if (!data || typeof data !== "object") return;
+
+    if (data.type === "vtx-login" && data.ok && data.result) {
+      handleLoginResult(data.result);
+      closeEmbed();
       return;
     }
 
-    openModal({
-      title: "购买全 PERFECT 道具",
-      desc: `${BOOST_PRICE} VTX · 一个谱面内全部判定为 PERFECT / CERT PERFECT`,
-      mode: "password",
-      submitLabel: `支付 ${BOOST_PRICE} VTX`,
-      onSubmit: buyBoostWithPassword
-    });
-  };
+    if (data.type === "vtx-pay" && data.ok) {
+      handlePayResult(data);
+      closeEmbed();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && embed) closeEmbed();
+  });
 
   const logout = () => {
     const vtx = sdk();
@@ -386,66 +404,25 @@
     if (nodes.action) {
       nodes.action.addEventListener("click", () => {
         if (state.loggedIn) logout();
-        else openLoginModal();
+        else startLogin();
       });
     }
 
-    if (nodes.buy) nodes.buy.addEventListener("click", openBuyModal);
-
-    const close = $("vtxModalClose");
-    if (close) close.addEventListener("click", closeModal);
-    const cancel = $("vtxModalCancel");
-    if (cancel) cancel.addEventListener("click", closeModal);
-
-    const submit = $("vtxModalSubmit");
-    if (submit) {
-      submit.addEventListener("click", () => {
-        if (modalSubmit) modalSubmit();
-      });
-    }
-
-    const modal = $("vtxModal");
-    if (modal) {
-      modal.addEventListener("click", (event) => {
-        if (event.target === modal) closeModal();
-      });
-    }
-
-    const password = $("vtxLoginPassword");
-    if (password) {
-      password.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" && modalSubmit) {
-          event.preventDefault();
-          modalSubmit();
-        }
-      });
-    }
-
-    const name = $("vtxLoginName");
-    if (name) {
-      name.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
-          event.preventDefault();
-          if (password) password.focus();
-        }
-      });
-    }
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && modal && !modal.hidden) closeModal();
-    });
+    if (nodes.buy) nodes.buy.addEventListener("click", startBuy);
   };
 
   const init = async () => {
     bind();
     render();
 
-    const vtx = sdk();
-    if (!vtx) {
-      render();
+    const loaded = await loadSdk();
+    render();
+
+    if (!loaded) {
       return;
     }
 
+    const vtx = sdk();
     vtx.configure({ baseUrl: API_BASE });
 
     if (!vtx.isLoggedIn()) {
@@ -473,8 +450,8 @@
     isBoostActive,
     consumeBoost,
     submitScore: persistScore,
-    openLogin: openLoginModal,
-    buyBoost: openBuyModal,
+    openLogin: startLogin,
+    buyBoost: startBuy,
     logout
   };
 

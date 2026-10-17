@@ -209,30 +209,7 @@
     <div class="result-card" id="resultCard" hidden><span class="result-eyebrow">RUN COMPLETE</span><div class="result-grade" id="resultGrade">A</div><h2 id="resultTitle">谱面完成</h2><p id="resultSummary">000000 分 · 0 连击</p><button class="primary-button" id="retryGame">再来一次 <span class="button-arrow">↗</span></button></div>
   </div>
   <input class="hidden-input" id="chartFileInput" type="file" accept=".zip,application/zip">
-  <div class="vtx-modal" id="vtxModal" hidden>
-    <div class="vtx-modal-card" role="dialog" aria-modal="true" aria-labelledby="vtxModalTitle">
-      <header class="vtx-modal-head">
-        <h2 id="vtxModalTitle">登录 Vitual XRing</h2>
-        <button class="vtx-modal-close" id="vtxModalClose" type="button" aria-label="关闭">×</button>
-      </header>
-      <p class="vtx-modal-desc" id="vtxModalDesc"></p>
-      <label class="vtx-field" id="vtxLoginField">
-        <span>登录账户名</span>
-        <input id="vtxLoginName" type="text" autocomplete="username" spellcheck="false">
-      </label>
-      <label class="vtx-field">
-        <span id="vtxPasswordLabel">密码</span>
-        <input id="vtxLoginPassword" type="password" autocomplete="current-password">
-      </label>
-      <p class="vtx-modal-message" id="vtxModalMessage"></p>
-      <div class="vtx-modal-actions">
-        <button class="vtx-modal-ghost" id="vtxModalCancel" type="button">取消</button>
-        <button class="vtx-modal-primary" id="vtxModalSubmit" type="button">登录</button>
-      </div>
-    </div>
-  </div>
   <div class="toast-region" id="toastRegion" aria-live="polite"></div>
-  <script src="https://xsmmc.caldson.us.ci/vtx-sdk.js?v=4.3"></script>
   <script src="./js/decrive-crypto.js"></script>
   <script src="./js/vtx-account.js"></script>
   <script src="./js/app.js"></script>
