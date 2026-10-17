@@ -303,7 +303,8 @@
 
     if (data.type === "vtx-login" && data.ok && data.result) {
       handleLoginResult(data.result);
-      closeEmbed();
+      // 留一点时间让内嵌页显示「登录成功」，随后自动收起
+      window.setTimeout(closeEmbed, 900);
       return;
     }
 
