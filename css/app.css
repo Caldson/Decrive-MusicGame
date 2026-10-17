@@ -7,3 +7,40 @@
 @media(max-width:600px){.player-actions{flex-direction:column;gap:4px}.player-actions .small-play{height:27px;padding:0 7px;font-size:8px}}
 .judgement-mode{margin-top:23px;padding-top:18px;border-top:1px solid #282d3a}.judgement-mode .field-label{margin-top:0;color:#c4cad6;font-size:10px}.judgement-mode .text-input{height:auto;min-height:36px;padding:8px;font-size:10px}.judgement-mode option{background:#10131c;color:#e2e5ee}.mode-description{margin:8px 0 0;color:#80899b;font-size:9px;line-height:1.65}
 .judgement-ranges{margin:7px 0 0;color:#697286;font:8px/1.7 var(--mono);letter-spacing:.1px}
+
+/* ===== Vitual XRing 账户适配 ===== */
+.vtx-shop{margin-top:12px;padding:11px 10px 10px;border:1px solid #1e222e;border-radius:11px;background:linear-gradient(160deg,#121620,#0d1018)}
+.vtx-shop-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10px;letter-spacing:.4px;color:#c8cede}
+.vtx-shop-head b{font:10px var(--mono);color:var(--yellow);letter-spacing:.2px}
+.vtx-shop-note{margin:6px 0 9px;color:#727b8d;font-size:9px;line-height:1.6}
+.vtx-shop-actions{display:flex;gap:6px}
+.vtx-shop-buy,.vtx-shop-login{flex:1;height:26px;border-radius:8px;border:1px solid #2a3042;background:#171c28;color:#c3cadb;font-size:9.5px;letter-spacing:.3px;cursor:pointer;transition:border-color .16s,color .16s,background .16s,opacity .16s}
+.vtx-shop-buy{border-color:#2f5c58;background:#12211f;color:var(--cyan)}
+.vtx-shop-buy:hover:not(:disabled),.vtx-shop-login:hover{border-color:var(--cyan);color:var(--cyan)}
+.vtx-shop-buy:disabled{opacity:.42;cursor:not-allowed;color:#7d8497;border-color:#242938;background:#12151d}
+.profile.guest .avatar{background:linear-gradient(145deg,#2c3145,#3d4459);color:#9aa2b5}
+.profile.guest strong{color:#9aa2b5}
+.profile .more{font:10px var(--mono);letter-spacing:.4px;color:var(--yellow)}
+.profile .more[hidden]{display:none}
+.vtx-modal{position:fixed;z-index:40;inset:0;display:grid;place-items:center;padding:20px;background:rgba(5,7,12,.72);backdrop-filter:blur(6px)}
+.vtx-modal[hidden]{display:none}
+.vtx-modal-card{width:100%;max-width:352px;padding:22px 22px 18px;border:1px solid #252b3a;border-radius:16px;background:linear-gradient(165deg,#141826,#0d1017);box-shadow:0 30px 70px rgba(0,0,0,.55)}
+.vtx-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.vtx-modal-head h2{margin:0;font-size:15px;letter-spacing:.2px}
+.vtx-modal-close{width:24px;height:24px;border:none;border-radius:7px;background:#1b2130;color:#96a0b3;font-size:15px;line-height:1;cursor:pointer}
+.vtx-modal-close:hover{color:var(--text)}
+.vtx-modal-desc{margin:7px 0 14px;color:#7d8497;font-size:10.5px;line-height:1.65}
+.vtx-field{display:block;margin-bottom:11px}
+.vtx-field[hidden]{display:none}
+.vtx-field span{display:block;margin-bottom:5px;color:#8d95a8;font-size:9.5px;letter-spacing:.3px}
+.vtx-field input{width:100%;height:34px;padding:0 11px;border:1px solid #262c3c;border-radius:9px;background:#0d1018;color:var(--text);font-size:12px;transition:border-color .16s,box-shadow .16s}
+.vtx-field input:focus{outline:none;border-color:#3f7f76;box-shadow:0 0 0 3px rgba(112,230,208,.1)}
+.vtx-modal-message{min-height:16px;margin:2px 0 10px;color:#f87f88;font-size:9.5px;line-height:1.6}
+.vtx-modal-message.ok{color:var(--cyan)}
+.vtx-modal-actions{display:flex;gap:8px}
+.vtx-modal-ghost,.vtx-modal-primary{flex:1;height:34px;border-radius:9px;font-size:11px;letter-spacing:.3px;cursor:pointer;transition:border-color .16s,filter .16s,opacity .16s}
+.vtx-modal-ghost{border:1px solid #262c3c;background:#141926;color:#a7b0c2}
+.vtx-modal-ghost:hover{border-color:#3a4257}
+.vtx-modal-primary{border:1px solid #2f6f67;background:linear-gradient(150deg,#1c4a44,#123029);color:var(--cyan);font-weight:700}
+.vtx-modal-primary:hover:not(:disabled){filter:brightness(1.14)}
+.vtx-modal-primary:disabled{opacity:.55;cursor:not-allowed}

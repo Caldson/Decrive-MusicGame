@@ -845,8 +845,9 @@
       element:null
     }));
     const maxTime = notes.reduce((maximum,note) => Math.max(maximum,note.timeMs), 10000);
-    const game = {notes, startAt, endAt:startAt+maxTime+2500, score:0, combo:0, maxCombo:0, total:notes.length, done:0, audioStarted:false};
+    const game = {notes, startAt, endAt:startAt+maxTime+2500, score:0, combo:0, maxCombo:0, total:notes.length, done:0, audioStarted:false, boost:boostActive(), chartId:activeChart.id, chartTitle:activeChart.title};
     currentGame = game;
+    if (game.boost) notify("道具生效：本谱面全部判定 PERFECT / CERT PERFECT", "success");
     $("#fallingNotes").replaceChildren();
     $("#gameProgress").style.width = "0%";
     game.activeNotes = new Set();
@@ -892,6 +893,10 @@
       }
       for (const note of game.activeNotes) {
         const distance = note.target - now;
+        if (game.boost && distance <= 0) {
+          registerHit(note, 0);
+          continue;
+        }
         const position = Math.max(-15,Math.min(100,100-(distance/travelMs)*100));
         note.element.style.top = `${position}%`;
         if (distance < -200) {
@@ -961,6 +966,31 @@
 
   const errorInTimingWindow = delta => Math.abs(delta) > 75 && Math.abs(delta) <= 200;
 
+  const boostActive = () => Boolean(window.DecriveAccount && window.DecriveAccount.isBoostActive());
+
+  const registerHit = (note, delta) => {
+    if (!currentGame) return;
+    note.hit = true;
+    if (note.element) {
+      note.element.classList.add("note-hit");
+      note.element.remove();
+    }
+    currentGame.activeNotes.delete(note);
+    const timing = resolveJudgement(delta, settings.judgementMode);
+    const label = timing.label;
+    if (label === "MISS") currentGame.combo = 0;
+    else {
+      currentGame.score += timing.points + Math.min(100,currentGame.combo*2);
+      currentGame.combo += 1;
+    }
+    currentGame.done += 1;
+    currentGame.maxCombo = Math.max(currentGame.maxCombo,currentGame.combo);
+    $("#gameScore").textContent = String(currentGame.score).padStart(7,"0");
+    $("#gameCombo").textContent = String(currentGame.combo);
+    showJudgement(label);
+    if (gameSynth && label !== "MISS") beep(gameSynth,gameSynth.currentTime, label.includes("PERFECT") ? 900 : 680,.07,.045);
+  };
+
   const hitLane = lane => {
     if (!currentGame) return;
     const now = performance.now();
@@ -977,23 +1007,7 @@
     $("#hitFlash").classList.add("active");
     window.setTimeout(() => $("#hitFlash").classList.remove("active"),75);
     if (!closest || distance > 200) { showJudgement("空击"); return; }
-    closest.hit = true;
-    closest.element.classList.add("note-hit");
-    closest.element.remove();
-    currentGame.activeNotes.delete(closest);
-    const timing = resolveJudgement(closest.target-now, settings.judgementMode);
-    const label = timing.label;
-    if (label === "MISS") currentGame.combo = 0;
-    else {
-      currentGame.score += timing.points + Math.min(100,currentGame.combo*2);
-      currentGame.combo += 1;
-    }
-    currentGame.done += 1;
-    currentGame.maxCombo = Math.max(currentGame.maxCombo,currentGame.combo);
-    $("#gameScore").textContent = String(currentGame.score).padStart(7,"0");
-    $("#gameCombo").textContent = String(currentGame.combo);
-    showJudgement(label);
-    if (gameSynth && label !== "MISS") beep(gameSynth,gameSynth.currentTime, label.includes("PERFECT") ? 900 : 680,.07,.045);
+    registerHit(closest, closest.target-now);
   };
 
   $("#gameStage .playfield").addEventListener("pointerdown", event => {
@@ -1013,6 +1027,19 @@
     $("#resultGrade").textContent = accuracy >= .92 ? "S" : accuracy >= .8 ? "A" : accuracy >= .6 ? "B" : "C";
     $("#resultSummary").textContent = `${String(game.score).padStart(7,"0")} 分 · ${game.maxCombo} 最大连击`;
     $("#resultCard").hidden = false;
+    if (window.DecriveAccount) {
+      if (game.boost) window.DecriveAccount.consumeBoost();
+      window.DecriveAccount.submitScore({
+        chartId: game.chartId,
+        chartTitle: game.chartTitle,
+        score: game.score,
+        combo: game.maxCombo,
+        grade: $("#resultGrade").textContent,
+        accuracy,
+        boost: Boolean(game.boost),
+        time: new Date().toISOString()
+      });
+    }
   };
 
   const closeGame = async () => {
