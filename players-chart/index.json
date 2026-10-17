@@ -1,7 +1,21 @@
 {
     "version": 1,
-    "updatedAt": "2026-10-17T11:13:33.276Z",
+    "updatedAt": "2026-10-17T11:56:21.483Z",
     "charts": [
+        {
+            "id": "cmvccc2gjxwk9",
+            "folder": "4k轮指测试-60bpm-gjxwk9",
+            "title": "4K轮指测试 60BPM",
+            "artist": "Minecraft 乄 咖咯德苏林",
+            "bpm": 60,
+            "meter": "4/4",
+            "difficulty": 6,
+            "noteCount": 77,
+            "author": "刘浩天（站主）",
+            "music": null,
+            "createdAt": "2026-10-17T11:56:21.483Z",
+            "size": 1001180
+        },
         {
             "id": "cmvcat1m8jmt2",
             "folder": "most-fxxking-chart-m8jmt2",
