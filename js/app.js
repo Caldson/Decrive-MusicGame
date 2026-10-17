@@ -1261,7 +1261,7 @@
     $("#judgement").textContent = "READY?";
     $("#gameProgress").style.width = "0%";
     $("#fallingNotes").replaceChildren();
-    if (gameAudio) { gameAudio.pause(); gameAudio.src = ""; gameAudio = null; }
+    if (gameAudio) { gameAudio.onerror = null; gameAudio.pause(); gameAudio.src = ""; gameAudio = null; }
     if (gameAudioUrl) { URL.revokeObjectURL(gameAudioUrl); gameAudioUrl = null; }
     if (gameSynth) { await gameSynth.close().catch(() => {}); gameSynth = null; }
     let audioData = null;
@@ -1288,7 +1288,11 @@
     game.nextNoteIndex = 0;
     if (audio) {
       audio.preload = "auto";
-      audio.addEventListener("error", () => notify("音乐无法播放，请检查文件格式。", "error"), {once:true});
+      audio.onerror = () => {
+        // 切换到别的谱面/退出时会把 src 清空，此时不应报警
+        if (!audio.src || audio.src === window.location.href) return;
+        notify("音乐无法播放，请检查文件格式。", "error");
+      };
     } else {
       try {
         gameSynth = audioContext();
@@ -1479,7 +1483,7 @@
   const closeGame = async () => {
     cancelAnimationFrame(gameFrame);
     currentGame = null;
-    if (gameAudio) { gameAudio.pause(); gameAudio.src = ""; gameAudio = null; }
+    if (gameAudio) { gameAudio.onerror = null; gameAudio.pause(); gameAudio.src = ""; gameAudio = null; }
     if (gameAudioUrl) { URL.revokeObjectURL(gameAudioUrl); gameAudioUrl = null; }
     if (gameSynth) { await gameSynth.close().catch(() => {}); gameSynth = null; }
     if (gameBackgroundUrl) { URL.revokeObjectURL(gameBackgroundUrl); gameBackgroundUrl = null; }

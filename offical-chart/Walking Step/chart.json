@@ -1,0 +1,1175 @@
+{
+  "id": "official-walking-step",
+  "title": "Walking Step",
+  "artist": "Minecraft 乄 咖咯德苏林",
+  "bpm": 120,
+  "meter": "4/4",
+  "difficulty": 7,
+  "offsetMs": 0,
+  "notes": [
+    {
+      "timeMs": 8000,
+      "lane": 3
+    },
+    {
+      "timeMs": 8500,
+      "lane": 2
+    },
+    {
+      "timeMs": 9000,
+      "lane": 0
+    },
+    {
+      "timeMs": 9500,
+      "lane": 1
+    },
+    {
+      "timeMs": 10000,
+      "lane": 0
+    },
+    {
+      "timeMs": 10500,
+      "lane": 3
+    },
+    {
+      "timeMs": 11000,
+      "lane": 0
+    },
+    {
+      "timeMs": 11500,
+      "lane": 3
+    },
+    {
+      "timeMs": 11750,
+      "lane": 1
+    },
+    {
+      "timeMs": 12000,
+      "lane": 2
+    },
+    {
+      "timeMs": 12500,
+      "lane": 1
+    },
+    {
+      "timeMs": 13000,
+      "lane": 2
+    },
+    {
+      "timeMs": 13500,
+      "lane": 3
+    },
+    {
+      "timeMs": 14000,
+      "lane": 0
+    },
+    {
+      "timeMs": 14500,
+      "lane": 3
+    },
+    {
+      "timeMs": 15500,
+      "lane": 0
+    },
+    {
+      "timeMs": 15750,
+      "lane": 1
+    },
+    {
+      "timeMs": 16000,
+      "lane": 0
+    },
+    {
+      "timeMs": 16375,
+      "lane": 3
+    },
+    {
+      "timeMs": 16500,
+      "lane": 0
+    },
+    {
+      "timeMs": 17000,
+      "lane": 1
+    },
+    {
+      "timeMs": 17250,
+      "lane": 3
+    },
+    {
+      "timeMs": 17500,
+      "lane": 0
+    },
+    {
+      "timeMs": 17750,
+      "lane": 1
+    },
+    {
+      "timeMs": 18000,
+      "lane": 2
+    },
+    {
+      "timeMs": 18250,
+      "lane": 3
+    },
+    {
+      "timeMs": 18500,
+      "lane": 0
+    },
+    {
+      "timeMs": 18750,
+      "lane": 2
+    },
+    {
+      "timeMs": 19000,
+      "lane": 0
+    },
+    {
+      "timeMs": 19250,
+      "lane": 3
+    },
+    {
+      "timeMs": 19500,
+      "lane": 1
+    },
+    {
+      "timeMs": 19750,
+      "lane": 0
+    },
+    {
+      "timeMs": 20000,
+      "lane": 2
+    },
+    {
+      "timeMs": 20167,
+      "lane": 3
+    },
+    {
+      "timeMs": 20333,
+      "lane": 2
+    },
+    {
+      "timeMs": 20500,
+      "lane": 0
+    },
+    {
+      "timeMs": 20750,
+      "lane": 3
+    },
+    {
+      "timeMs": 21000,
+      "lane": 0
+    },
+    {
+      "timeMs": 21250,
+      "lane": 3
+    },
+    {
+      "timeMs": 21500,
+      "lane": 2
+    },
+    {
+      "timeMs": 21750,
+      "lane": 0
+    },
+    {
+      "timeMs": 22000,
+      "lane": 3
+    },
+    {
+      "timeMs": 22500,
+      "lane": 2
+    },
+    {
+      "timeMs": 23000,
+      "lane": 1
+    },
+    {
+      "timeMs": 23500,
+      "lane": 3
+    },
+    {
+      "timeMs": 23750,
+      "lane": 2
+    },
+    {
+      "timeMs": 24000,
+      "lane": 0
+    },
+    {
+      "timeMs": 24000,
+      "lane": 1
+    },
+    {
+      "timeMs": 24375,
+      "lane": 3
+    },
+    {
+      "timeMs": 24500,
+      "lane": 1
+    },
+    {
+      "timeMs": 24500,
+      "lane": 2
+    },
+    {
+      "timeMs": 24750,
+      "lane": 3
+    },
+    {
+      "timeMs": 25000,
+      "lane": 0
+    },
+    {
+      "timeMs": 25000,
+      "lane": 1
+    },
+    {
+      "timeMs": 25250,
+      "lane": 3
+    },
+    {
+      "timeMs": 25500,
+      "lane": 0
+    },
+    {
+      "timeMs": 25500,
+      "lane": 1
+    },
+    {
+      "timeMs": 25750,
+      "lane": 0
+    },
+    {
+      "timeMs": 26000,
+      "lane": 2
+    },
+    {
+      "timeMs": 26000,
+      "lane": 3
+    },
+    {
+      "timeMs": 26375,
+      "lane": 3
+    },
+    {
+      "timeMs": 26500,
+      "lane": 1
+    },
+    {
+      "timeMs": 26500,
+      "lane": 2
+    },
+    {
+      "timeMs": 26750,
+      "lane": 3
+    },
+    {
+      "timeMs": 27000,
+      "lane": 0
+    },
+    {
+      "timeMs": 27000,
+      "lane": 2
+    },
+    {
+      "timeMs": 27250,
+      "lane": 3
+    },
+    {
+      "timeMs": 27500,
+      "lane": 0
+    },
+    {
+      "timeMs": 27500,
+      "lane": 1
+    },
+    {
+      "timeMs": 27750,
+      "lane": 0
+    },
+    {
+      "timeMs": 28000,
+      "lane": 1
+    },
+    {
+      "timeMs": 28000,
+      "lane": 3
+    },
+    {
+      "timeMs": 28375,
+      "lane": 3
+    },
+    {
+      "timeMs": 28500,
+      "lane": 1
+    },
+    {
+      "timeMs": 28500,
+      "lane": 2
+    },
+    {
+      "timeMs": 28750,
+      "lane": 3
+    },
+    {
+      "timeMs": 29000,
+      "lane": 0
+    },
+    {
+      "timeMs": 29000,
+      "lane": 2
+    },
+    {
+      "timeMs": 29250,
+      "lane": 3
+    },
+    {
+      "timeMs": 29500,
+      "lane": 0
+    },
+    {
+      "timeMs": 29500,
+      "lane": 1
+    },
+    {
+      "timeMs": 29750,
+      "lane": 0
+    },
+    {
+      "timeMs": 30000,
+      "lane": 1
+    },
+    {
+      "timeMs": 30000,
+      "lane": 3
+    },
+    {
+      "timeMs": 30375,
+      "lane": 3
+    },
+    {
+      "timeMs": 30500,
+      "lane": 1
+    },
+    {
+      "timeMs": 30500,
+      "lane": 2
+    },
+    {
+      "timeMs": 30750,
+      "lane": 3
+    },
+    {
+      "timeMs": 31000,
+      "lane": 0
+    },
+    {
+      "timeMs": 31000,
+      "lane": 2
+    },
+    {
+      "timeMs": 31250,
+      "lane": 3
+    },
+    {
+      "timeMs": 31500,
+      "lane": 0
+    },
+    {
+      "timeMs": 31500,
+      "lane": 1
+    },
+    {
+      "timeMs": 31750,
+      "lane": 0
+    },
+    {
+      "timeMs": 32000,
+      "lane": 2
+    },
+    {
+      "timeMs": 32000,
+      "lane": 3
+    },
+    {
+      "timeMs": 32375,
+      "lane": 3
+    },
+    {
+      "timeMs": 32500,
+      "lane": 1
+    },
+    {
+      "timeMs": 32500,
+      "lane": 2
+    },
+    {
+      "timeMs": 32750,
+      "lane": 3
+    },
+    {
+      "timeMs": 33000,
+      "lane": 0
+    },
+    {
+      "timeMs": 33000,
+      "lane": 2
+    },
+    {
+      "timeMs": 33250,
+      "lane": 3
+    },
+    {
+      "timeMs": 33500,
+      "lane": 0
+    },
+    {
+      "timeMs": 33500,
+      "lane": 2
+    },
+    {
+      "timeMs": 33750,
+      "lane": 0
+    },
+    {
+      "timeMs": 34000,
+      "lane": 1
+    },
+    {
+      "timeMs": 34000,
+      "lane": 3
+    },
+    {
+      "timeMs": 34375,
+      "lane": 2
+    },
+    {
+      "timeMs": 34500,
+      "lane": 1
+    },
+    {
+      "timeMs": 34500,
+      "lane": 3
+    },
+    {
+      "timeMs": 34750,
+      "lane": 3
+    },
+    {
+      "timeMs": 35000,
+      "lane": 0
+    },
+    {
+      "timeMs": 35000,
+      "lane": 2
+    },
+    {
+      "timeMs": 35250,
+      "lane": 3
+    },
+    {
+      "timeMs": 35500,
+      "lane": 0
+    },
+    {
+      "timeMs": 35500,
+      "lane": 1
+    },
+    {
+      "timeMs": 35750,
+      "lane": 0
+    },
+    {
+      "timeMs": 36000,
+      "lane": 1
+    },
+    {
+      "timeMs": 36000,
+      "lane": 3
+    },
+    {
+      "timeMs": 36375,
+      "lane": 3
+    },
+    {
+      "timeMs": 36500,
+      "lane": 1
+    },
+    {
+      "timeMs": 36500,
+      "lane": 2
+    },
+    {
+      "timeMs": 36750,
+      "lane": 3
+    },
+    {
+      "timeMs": 37000,
+      "lane": 0
+    },
+    {
+      "timeMs": 37000,
+      "lane": 2
+    },
+    {
+      "timeMs": 37250,
+      "lane": 3
+    },
+    {
+      "timeMs": 37500,
+      "lane": 0
+    },
+    {
+      "timeMs": 37500,
+      "lane": 2
+    },
+    {
+      "timeMs": 37750,
+      "lane": 0
+    },
+    {
+      "timeMs": 38000,
+      "lane": 1
+    },
+    {
+      "timeMs": 38000,
+      "lane": 3
+    },
+    {
+      "timeMs": 38375,
+      "lane": 3
+    },
+    {
+      "timeMs": 38500,
+      "lane": 1
+    },
+    {
+      "timeMs": 38500,
+      "lane": 2
+    },
+    {
+      "timeMs": 38750,
+      "lane": 3
+    },
+    {
+      "timeMs": 39000,
+      "lane": 0
+    },
+    {
+      "timeMs": 39000,
+      "lane": 1
+    },
+    {
+      "timeMs": 39250,
+      "lane": 3
+    },
+    {
+      "timeMs": 39500,
+      "lane": 0
+    },
+    {
+      "timeMs": 39500,
+      "lane": 2
+    },
+    {
+      "timeMs": 39750,
+      "lane": 0
+    },
+    {
+      "timeMs": 40000,
+      "lane": 1
+    },
+    {
+      "timeMs": 40000,
+      "lane": 2
+    },
+    {
+      "timeMs": 40375,
+      "lane": 3
+    },
+    {
+      "timeMs": 40500,
+      "lane": 1
+    },
+    {
+      "timeMs": 40500,
+      "lane": 2
+    },
+    {
+      "timeMs": 40750,
+      "lane": 3
+    },
+    {
+      "timeMs": 41000,
+      "lane": 0
+    },
+    {
+      "timeMs": 41000,
+      "lane": 1
+    },
+    {
+      "timeMs": 41250,
+      "lane": 3
+    },
+    {
+      "timeMs": 41500,
+      "lane": 0
+    },
+    {
+      "timeMs": 41500,
+      "lane": 2
+    },
+    {
+      "timeMs": 41750,
+      "lane": 0
+    },
+    {
+      "timeMs": 42000,
+      "lane": 2
+    },
+    {
+      "timeMs": 42000,
+      "lane": 3
+    },
+    {
+      "timeMs": 42375,
+      "lane": 3
+    },
+    {
+      "timeMs": 42500,
+      "lane": 1
+    },
+    {
+      "timeMs": 42500,
+      "lane": 2
+    },
+    {
+      "timeMs": 42750,
+      "lane": 3
+    },
+    {
+      "timeMs": 43000,
+      "lane": 0
+    },
+    {
+      "timeMs": 43000,
+      "lane": 2
+    },
+    {
+      "timeMs": 43250,
+      "lane": 3
+    },
+    {
+      "timeMs": 43500,
+      "lane": 0
+    },
+    {
+      "timeMs": 43500,
+      "lane": 1
+    },
+    {
+      "timeMs": 43750,
+      "lane": 0
+    },
+    {
+      "timeMs": 44000,
+      "lane": 2
+    },
+    {
+      "timeMs": 44000,
+      "lane": 3
+    },
+    {
+      "timeMs": 44375,
+      "lane": 3
+    },
+    {
+      "timeMs": 44500,
+      "lane": 1
+    },
+    {
+      "timeMs": 44500,
+      "lane": 2
+    },
+    {
+      "timeMs": 44750,
+      "lane": 3
+    },
+    {
+      "timeMs": 45000,
+      "lane": 0
+    },
+    {
+      "timeMs": 45000,
+      "lane": 1
+    },
+    {
+      "timeMs": 45250,
+      "lane": 3
+    },
+    {
+      "timeMs": 45500,
+      "lane": 0
+    },
+    {
+      "timeMs": 45500,
+      "lane": 1
+    },
+    {
+      "timeMs": 45750,
+      "lane": 0
+    },
+    {
+      "timeMs": 46000,
+      "lane": 1
+    },
+    {
+      "timeMs": 46000,
+      "lane": 3
+    },
+    {
+      "timeMs": 46375,
+      "lane": 2
+    },
+    {
+      "timeMs": 46500,
+      "lane": 1
+    },
+    {
+      "timeMs": 46500,
+      "lane": 3
+    },
+    {
+      "timeMs": 46750,
+      "lane": 3
+    },
+    {
+      "timeMs": 47000,
+      "lane": 0
+    },
+    {
+      "timeMs": 47000,
+      "lane": 2
+    },
+    {
+      "timeMs": 47250,
+      "lane": 3
+    },
+    {
+      "timeMs": 47500,
+      "lane": 0
+    },
+    {
+      "timeMs": 47500,
+      "lane": 1
+    },
+    {
+      "timeMs": 47750,
+      "lane": 0
+    },
+    {
+      "timeMs": 48000,
+      "lane": 0
+    },
+    {
+      "timeMs": 48000,
+      "lane": 3
+    },
+    {
+      "timeMs": 48375,
+      "lane": 3
+    },
+    {
+      "timeMs": 48500,
+      "lane": 1
+    },
+    {
+      "timeMs": 48500,
+      "lane": 2
+    },
+    {
+      "timeMs": 48750,
+      "lane": 3
+    },
+    {
+      "timeMs": 49000,
+      "lane": 0
+    },
+    {
+      "timeMs": 49000,
+      "lane": 2
+    },
+    {
+      "timeMs": 49250,
+      "lane": 3
+    },
+    {
+      "timeMs": 49500,
+      "lane": 0
+    },
+    {
+      "timeMs": 49500,
+      "lane": 2
+    },
+    {
+      "timeMs": 49750,
+      "lane": 0
+    },
+    {
+      "timeMs": 49875,
+      "lane": 1
+    },
+    {
+      "timeMs": 50000,
+      "lane": 2
+    },
+    {
+      "timeMs": 50000,
+      "lane": 3
+    },
+    {
+      "timeMs": 50375,
+      "lane": 3
+    },
+    {
+      "timeMs": 50500,
+      "lane": 1
+    },
+    {
+      "timeMs": 50500,
+      "lane": 2
+    },
+    {
+      "timeMs": 50750,
+      "lane": 3
+    },
+    {
+      "timeMs": 51000,
+      "lane": 0
+    },
+    {
+      "timeMs": 51000,
+      "lane": 1
+    },
+    {
+      "timeMs": 51250,
+      "lane": 3
+    },
+    {
+      "timeMs": 51500,
+      "lane": 0
+    },
+    {
+      "timeMs": 51500,
+      "lane": 1
+    },
+    {
+      "timeMs": 51750,
+      "lane": 0
+    },
+    {
+      "timeMs": 52000,
+      "lane": 2
+    },
+    {
+      "timeMs": 52000,
+      "lane": 3
+    },
+    {
+      "timeMs": 52375,
+      "lane": 3
+    },
+    {
+      "timeMs": 52500,
+      "lane": 1
+    },
+    {
+      "timeMs": 52500,
+      "lane": 2
+    },
+    {
+      "timeMs": 52750,
+      "lane": 2
+    },
+    {
+      "timeMs": 53000,
+      "lane": 0
+    },
+    {
+      "timeMs": 53000,
+      "lane": 1
+    },
+    {
+      "timeMs": 53250,
+      "lane": 3
+    },
+    {
+      "timeMs": 53500,
+      "lane": 0
+    },
+    {
+      "timeMs": 53500,
+      "lane": 2
+    },
+    {
+      "timeMs": 53750,
+      "lane": 0
+    },
+    {
+      "timeMs": 53875,
+      "lane": 1
+    },
+    {
+      "timeMs": 54000,
+      "lane": 2
+    },
+    {
+      "timeMs": 54000,
+      "lane": 3
+    },
+    {
+      "timeMs": 54375,
+      "lane": 3
+    },
+    {
+      "timeMs": 54500,
+      "lane": 1
+    },
+    {
+      "timeMs": 54500,
+      "lane": 2
+    },
+    {
+      "timeMs": 54750,
+      "lane": 3
+    },
+    {
+      "timeMs": 55000,
+      "lane": 0
+    },
+    {
+      "timeMs": 55000,
+      "lane": 1
+    },
+    {
+      "timeMs": 55250,
+      "lane": 3
+    },
+    {
+      "timeMs": 55500,
+      "lane": 0
+    },
+    {
+      "timeMs": 55500,
+      "lane": 1
+    },
+    {
+      "timeMs": 55750,
+      "lane": 0
+    },
+    {
+      "timeMs": 56000,
+      "lane": 1
+    },
+    {
+      "timeMs": 56000,
+      "lane": 2
+    },
+    {
+      "timeMs": 56375,
+      "lane": 3
+    },
+    {
+      "timeMs": 56500,
+      "lane": 1
+    },
+    {
+      "timeMs": 56500,
+      "lane": 2
+    },
+    {
+      "timeMs": 56750,
+      "lane": 3
+    },
+    {
+      "timeMs": 57000,
+      "lane": 0
+    },
+    {
+      "timeMs": 57000,
+      "lane": 2
+    },
+    {
+      "timeMs": 57250,
+      "lane": 3
+    },
+    {
+      "timeMs": 57500,
+      "lane": 0
+    },
+    {
+      "timeMs": 57500,
+      "lane": 2
+    },
+    {
+      "timeMs": 57750,
+      "lane": 0
+    },
+    {
+      "timeMs": 57875,
+      "lane": 1
+    },
+    {
+      "timeMs": 58000,
+      "lane": 1
+    },
+    {
+      "timeMs": 58000,
+      "lane": 2
+    },
+    {
+      "timeMs": 58375,
+      "lane": 3
+    },
+    {
+      "timeMs": 58500,
+      "lane": 1
+    },
+    {
+      "timeMs": 58500,
+      "lane": 2
+    },
+    {
+      "timeMs": 58750,
+      "lane": 3
+    },
+    {
+      "timeMs": 59000,
+      "lane": 0
+    },
+    {
+      "timeMs": 59000,
+      "lane": 2
+    },
+    {
+      "timeMs": 59250,
+      "lane": 3
+    },
+    {
+      "timeMs": 59500,
+      "lane": 0
+    },
+    {
+      "timeMs": 59500,
+      "lane": 1
+    },
+    {
+      "timeMs": 59750,
+      "lane": 0
+    },
+    {
+      "timeMs": 60000,
+      "lane": 2
+    },
+    {
+      "timeMs": 60000,
+      "lane": 3
+    },
+    {
+      "timeMs": 60375,
+      "lane": 3
+    },
+    {
+      "timeMs": 60500,
+      "lane": 1
+    },
+    {
+      "timeMs": 60500,
+      "lane": 2
+    },
+    {
+      "timeMs": 60750,
+      "lane": 3
+    },
+    {
+      "timeMs": 61000,
+      "lane": 0
+    },
+    {
+      "timeMs": 61000,
+      "lane": 2
+    },
+    {
+      "timeMs": 61250,
+      "lane": 3
+    },
+    {
+      "timeMs": 61500,
+      "lane": 0
+    },
+    {
+      "timeMs": 61500,
+      "lane": 2
+    },
+    {
+      "timeMs": 61750,
+      "lane": 0
+    },
+    {
+      "timeMs": 61875,
+      "lane": 1
+    },
+    {
+      "timeMs": 62000,
+      "lane": 2
+    },
+    {
+      "timeMs": 62000,
+      "lane": 3
+    },
+    {
+      "timeMs": 62375,
+      "lane": 3
+    },
+    {
+      "timeMs": 62500,
+      "lane": 1
+    },
+    {
+      "timeMs": 62500,
+      "lane": 2
+    },
+    {
+      "timeMs": 62750,
+      "lane": 3
+    },
+    {
+      "timeMs": 63000,
+      "lane": 0
+    },
+    {
+      "timeMs": 63000,
+      "lane": 1
+    },
+    {
+      "timeMs": 63250,
+      "lane": 3
+    },
+    {
+      "timeMs": 63500,
+      "lane": 0
+    },
+    {
+      "timeMs": 63500,
+      "lane": 2
+    },
+    {
+      "timeMs": 63750,
+      "lane": 0
+    },
+    {
+      "timeMs": 64000,
+      "lane": 3
+    }
+  ]
+}

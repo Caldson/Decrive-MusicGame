@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "charts": [
     {
       "id": "official-neon-afterglow",
@@ -19,7 +19,7 @@
     {
       "id": "official-life-just-like-short-2",
       "title": "Life just like Short 2",
-      "artist": "XRing Studios",
+      "artist": "Minecraft 乄 咖咯德苏林",
       "bpm": 120,
       "meter": "4/4",
       "difficulty": 8.2,
@@ -30,6 +30,37 @@
       "chart": "chart.json",
       "background": "bg.png",
       "music": "music.mp3"
+    },
+    {
+      "id": "official-walking-step",
+      "title": "Walking Step",
+      "artist": "Minecraft 乄 咖咯德苏林",
+      "bpm": 120,
+      "meter": "4/4",
+      "difficulty": 7,
+      "noteCount": 291,
+      "length": "01:04",
+      "tag": "FIRST FUNK",
+      "folder": "Walking Step",
+      "chart": "chart.json",
+      "background": "bg.png",
+      "music": "music.mp3"
+    },
+    {
+      "id": "official-crazy-world",
+      "title": "クレイジー・ワールド",
+      "artist": "Minecraft 乄 咖咯德苏林 feat. 重音テト",
+      "bpm": 120,
+      "meter": "4/4",
+      "difficulty": 9,
+      "noteCount": 737,
+      "length": "01:38",
+      "tag": "INST. VER.",
+      "folder": "クレイジー・ワールド",
+      "chart": "chart.json",
+      "background": "bg.png",
+      "music": "music.mp3"
     }
   ]
 }
+
