@@ -19,7 +19,7 @@
       </a>
       <div class="nav-label">工作台 <span>WORKSPACE</span></div>
       <nav class="main-nav" aria-label="主导航">
-        <button class="nav-item active" data-view="official"><span class="nav-icon">◈</span><span>官方谱面</span><span class="nav-count">01</span></button>
+        <button class="nav-item active" data-view="official"><span class="nav-icon">◈</span><span>官方谱面</span><span class="nav-count" id="officialCount">00</span></button>
         <button class="nav-item" data-view="players"><span class="nav-icon">⌘</span><span>玩家谱面</span><span class="nav-count" id="playerCount">00</span></button>
         <button class="nav-item" data-view="editor"><span class="nav-icon">✳</span><span>制谱器</span><span class="nav-count">NEW</span></button>
         <button class="nav-item" data-view="settings"><span class="nav-icon">⚙</span><span>设置</span></button>
@@ -51,21 +51,28 @@
       <section class="view active" id="view-official">
         <div class="page-heading">
           <div><div class="eyebrow"><span class="eyebrow-line"></span>SELECT YOUR BEAT</div><h1>官方谱面<span class="heading-period">.</span></h1><p class="page-description">选一首歌，跟随节奏，击中每一个瞬间。</p></div>
-          <div class="heading-meta"><span class="live-dot"></span> RHYTHM LIBRARY <strong>01</strong></div>
+          <div class="heading-meta"><span class="live-dot"></span> RHYTHM LIBRARY <strong id="officialHeadingCount">00</strong></div>
         </div>
         <div class="feature-card">
           <div class="feature-art" id="officialArt">
             <div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div><div class="art-core"><span>D</span></div>
             <div class="art-soundwave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-            <span class="art-index">TRACK 001 / 001</span><span class="art-tag">DEMO CHART</span>
+            <span class="art-index" id="featureIndex">TRACK 001 / 001</span><span class="art-tag" id="featureTag">DEMO CHART</span>
           </div>
           <div class="feature-info">
             <div class="track-kicker"><span>OFFICIAL CHART</span><span class="track-separator">/</span><span>04 KEYS</span></div>
-            <h2>Neon Afterglow</h2><p class="track-artist">DECRIVE STUDIO <span>·</span> ORIGINAL</p>
-            <div class="track-stats"><div><small>BPM</small><strong>128</strong></div><div><small>拍号</small><strong>4<span>/</span>4</strong></div><div><small>时长</small><strong>00<span>:</span>16</strong></div><div><small>谱面等级</small><strong class="difficulty">5.9</strong></div></div>
-            <div class="feature-bottom"><span class="chart-note-count"><span class="tiny-bars">▮▮▮</span> 32 NOTES</span><button class="primary-button" id="playOfficial"><span class="play-triangle">▶</span> 开始游玩 <span class="button-arrow">↗</span></button></div>
+            <h2 id="featureTitle">Neon Afterglow</h2><p class="track-artist" id="featureArtist">DECRIVE STUDIO <span>·</span> ORIGINAL</p>
+            <div class="track-stats">
+              <div><small>BPM</small><strong id="featureBpm">128</strong></div>
+              <div><small>拍号</small><strong id="featureMeter">4<span>/</span>4</strong></div>
+              <div><small>时长</small><strong id="featureLength">00<span>:</span>16</strong></div>
+              <div><small>谱面等级</small><strong class="difficulty" id="featureDifficulty">5.9</strong></div>
+            </div>
+            <div class="feature-bottom"><span class="chart-note-count" id="featureNotes"><span class="tiny-bars">▮▮▮</span> 32 NOTES</span><button class="primary-button" id="playOfficial"><span class="play-triangle">▶</span> 开始游玩 <span class="button-arrow">↗</span></button></div>
           </div>
         </div>
+        <div class="section-title"><div><span class="section-kicker">OFFICIAL LIBRARY</span><h3>更多官方谱面 <span class="muted-count" id="officialCountLabel">( 00 )</span></h3></div><span class="section-aside">全部由 XRing Studios 制作与审核</span></div>
+        <div class="official-list" id="officialList"></div>
         <div class="section-title"><div><span class="section-kicker">YOUR NEXT RUN</span><h3>准备好了吗？</h3></div><span class="section-aside">用键盘 <kbd>D</kbd> <kbd>F</kbd> <kbd>J</kbd> <kbd>K</kbd> 击打四轨音符</span></div>
         <div class="quick-tips"><div class="tip-icon">↗</div><div><strong>保持节奏，追求完美</strong><p>点击任意轨道，或在音符抵达判定线时按下对应按键。越精准，分数越高。</p></div><div class="tip-keys"><kbd>D</kbd><kbd>F</kbd><kbd>J</kbd><kbd>K</kbd></div></div>
       </section>

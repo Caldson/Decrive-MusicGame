@@ -6,6 +6,8 @@
   const DB_NAME = "beat-shift-library";
   const DB_STORE = "packages";
   const OFFICIAL_CHART_BACKGROUND = "./offical-chart/Neon%20Afterglow/bg.png";
+  const OFFICIAL_DIR = "./offical-chart";
+  const OFFICIAL_INDEX = `${OFFICIAL_DIR}/index.json`;
   const DEFAULT_JUDGEMENT_MODE = "1A";
   const JUDGEMENT_MODES = new Set(["1A","1B","2A","2B","3A","3B","4A","4B","4C","4D","4E","5A","5B","5C","5D","5E","5F"]);
   const KEYS = ["d", "f", "j", "k"];
@@ -15,23 +17,12 @@
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
   const toastRegion = $("#toastRegion");
-  const officialChart = {
-    id: "official-neon-afterglow",
-    title: "Neon Afterglow",
-    artist: "DECRIVE STUDIO",
-    bpm: 128,
-    meter: "4/4",
-    difficulty: 5.9,
-    offsetMs: 0,
-    notes: [
-      [700,0],[1170,1],[1640,2],[2110,3],[2580,0],[3050,1],[3520,2],[3990,3],
-      [4460,0],[4695,2],[4930,1],[5400,3],[5870,2],[6340,0],[6810,1],[7280,3],
-      [7750,0],[7985,1],[8220,2],[8690,3],[9160,2],[9630,1],[10100,0],[10570,3],
-      [11040,0],[11275,2],[11510,1],[11980,3],[12450,2],[12920,0],[13390,1],[13860,3]
-    ].map(([timeMs,lane]) => ({timeMs,lane}))
-  };
 
   let playerCharts = [];
+  let officialEntries = [];
+  let officialChart = null;
+  let officialCharts = [];
+  let selectedOfficial = null;
   let editorMedia = { music: null, background: null, musicName: "", backgroundName: "" };
   let currentGame = null;
   let gameFrame = 0;
@@ -41,6 +32,136 @@
   let gameBackgroundUrl = null;
   let pressedKeys = new Set();
   let activeChart = null;
+
+  const officialDirFor = entry =>
+    `${OFFICIAL_DIR}/${String(entry.folder || entry.title || "").split("/").map(encodeURIComponent).join("/")}`;
+
+  const formatLength = seconds => {
+    const total = Math.max(0, Math.round(seconds));
+    const minutes = Math.floor(total / 60);
+    return `${String(minutes).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`;
+  };
+
+  const renderOfficialList = () => {
+    const list = $("#officialList");
+    if (!list) return;
+    list.replaceChildren();
+    const label = $("#officialCountLabel");
+    if (label) label.textContent = `( ${String(officialCharts.length).padStart(2, "0")} )`;
+    const navCount = $("#officialCount");
+    if (navCount) navCount.textContent = String(officialCharts.length).padStart(2, "0");
+    const headingCount = $("#officialHeadingCount");
+    if (headingCount) headingCount.textContent = String(officialCharts.length).padStart(2, "0");
+
+    officialCharts.forEach((chart, index) => {
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "official-item";
+      if (selectedOfficial && selectedOfficial.id === chart.id) card.classList.add("active");
+
+      const order = document.createElement("span");
+      order.className = "official-item-index";
+      order.textContent = String(index + 1).padStart(2, "0");
+
+      const info = document.createElement("div");
+      info.className = "official-item-info";
+      const title = document.createElement("strong");
+      title.textContent = chart.title;
+      const meta = document.createElement("small");
+      meta.textContent = `${chart.bpm} BPM · ${chart.noteCount} NOTES · ${chart.length}`;
+      info.append(title, meta);
+
+      const level = document.createElement("span");
+      level.className = "official-item-level";
+      level.textContent = Number(chart.difficulty).toFixed(1);
+
+      const play = document.createElement("span");
+      play.className = "official-item-play";
+      play.textContent = "▶";
+
+      card.append(order, info, level, play);
+      card.addEventListener("click", () => selectOfficial(chart));
+      list.append(card);
+    });
+  };
+
+  const updateFeatureCard = (chart, index) => {
+    if (!chart) return;
+    const set = (id, value) => {
+      const node = $(`#${id}`);
+      if (node) node.textContent = value;
+    };
+
+    set("featureTitle", chart.title);
+    set("featureArtist", `${chart.artist} · OFFICIAL`);
+    set("featureBpm", chart.bpm);
+    set("featureMeter", chart.meter);
+    set("featureLength", chart.length);
+    set("featureDifficulty", Number(chart.difficulty).toFixed(1));
+    set("featureNotes", `${chart.noteCount} NOTES`);
+    set("featureIndex", `TRACK ${String(index + 1).padStart(3, "0")} / ${String(officialCharts.length).padStart(3, "0")}`);
+    set("featureTag", chart.tag || "OFFICIAL CHART");
+
+    const art = $("#officialArt");
+    if (art) {
+      art.style.backgroundImage = chart.backgroundPath ? `url("${chart.backgroundPath}")` : "";
+      art.classList.toggle("has-image", Boolean(chart.backgroundPath));
+    }
+  };
+
+  const selectOfficial = chart => {
+    selectedOfficial = chart;
+    officialChart = chart.chart;
+    const index = officialCharts.findIndex(item => item.id === chart.id);
+    updateFeatureCard(chart, index < 0 ? 0 : index);
+    renderOfficialList();
+  };
+
+  const loadOfficialCharts = async () => {
+    try {
+      const response = await fetch(`${OFFICIAL_INDEX}?t=${Date.now()}`, { cache: "no-store" });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      officialEntries = Array.isArray(data.charts) ? data.charts : [];
+    } catch (error) {
+      officialEntries = [];
+      notify(`读取官方曲库失败：${error.message}`, "error");
+    }
+
+    officialCharts = [];
+
+    for (const entry of officialEntries) {
+      try {
+        const dir = officialDirFor(entry);
+        const chartResponse = await fetch(`${dir}/${encodeURIComponent(entry.chart || "chart.json")}?t=${Date.now()}`, { cache: "no-store" });
+        if (!chartResponse.ok) throw new Error(`HTTP ${chartResponse.status}`);
+        const raw = await chartResponse.json();
+        const chart = normalizeChart(raw);
+        chart.id = entry.id || chart.id;
+
+        const musicName = entry.music || "";
+        const musicDir = musicName ? `${dir}/${encodeURIComponent(musicName)}` : null;
+
+        officialCharts.push({
+          ...entry,
+          chart,
+          backgroundPath: entry.background ? `${dir}/${encodeURIComponent(entry.background)}` : "",
+          musicPath: musicDir,
+          length: entry.length || formatLength((chart.notes.at(-1)?.timeMs ?? 0) / 1000 + 2),
+          noteCount: entry.noteCount || chart.notes.length
+        });
+      } catch (error) {
+        notify(`官方谱面「${entry.title || entry.folder}」加载失败：${error.message}`, "error");
+      }
+    }
+
+    if (officialCharts.length) {
+      selectOfficial(officialCharts[0]);
+    } else {
+      officialChart = null;
+    }
+    renderOfficialList();
+  };
 
   const notify = (message, type = "success") => {
     const item = document.createElement("div");
@@ -1067,6 +1188,11 @@
   });
 
   const chartAudioFor = async chart => {
+    if (chart.musicPath) {
+      const response = await fetch(chart.musicPath, { cache: "force-cache" });
+      if (!response.ok) throw new Error(`音乐下载失败（HTTP ${response.status}）`);
+      return { blob: await response.blob(), name: chart.musicPath.split("/").pop() };
+    }
     if (chart.entries) {
       const entry = chart.entries.find(item => /^music\./i.test(item.name));
       return entry ? {blob:new Blob([entry.data]),name:entry.name} : null;
@@ -1084,9 +1210,13 @@
     } catch (error) { notify(error.message, "error"); }
   };
 
-  const launchGame = async (chart, packageRecord = null) => {
+  const launchGame = async (chart, packageRecord = null, officialEntry = null) => {
     activeChart = normalizeChart(chart);
     if (packageRecord) activeChart.id = packageRecord.id;
+    if (officialEntry) {
+      activeChart.backgroundPath = officialEntry.backgroundPath || "";
+      activeChart.musicPath = officialEntry.musicPath || "";
+    }
     $("#gameTitle").textContent = activeChart.title;
     $("#gameMeta").textContent = `${activeChart.bpm} BPM · ${Number(activeChart.difficulty).toFixed(1)}`;
     $("#gameArtBg").style.backgroundImage = "";
@@ -1098,7 +1228,9 @@
         gameBackgroundUrl = URL.createObjectURL(new Blob([bg], {type:"image/png"}));
         $("#gameArtBg").style.backgroundImage = `url("${gameBackgroundUrl}")`;
       }
-    } else if (activeChart.id === officialChart.id) {
+    } else if (activeChart.backgroundPath) {
+      $("#gameArtBg").style.backgroundImage = `url("${activeChart.backgroundPath}")`;
+    } else if (activeChart.id === "official-neon-afterglow") {
       $("#gameArtBg").style.backgroundImage = `url("${OFFICIAL_CHART_BACKGROUND}")`;
     }
     const overlay = $("#gameOverlay");
@@ -1357,14 +1489,20 @@
     pressedKeys.clear();
   };
 
-  $("#playOfficial").addEventListener("click", () => launchGame(officialChart));
+  $("#playOfficial").addEventListener("click", () => {
+    if (!officialChart) { notify("官方谱面还没加载完成，请稍后重试。", "error"); return; }
+    launchGame(officialChart, null, selectedOfficial);
+  });
   $("#closeGame").addEventListener("click", closeGame);
   $("#retryGame").addEventListener("click", startGameRun);
   document.addEventListener("keydown", event => {
     if (event.key === "Escape" && $("#gameOverlay").classList.contains("open")) { closeGame(); return; }
     const key = event.key.toLowerCase();
     const inEditor = $("#view-editor").classList.contains("active");
-    if (inEditor && !event.target.matches("input,textarea,select")) {
+    const isTyping = event.target instanceof Element
+      ? Boolean(event.target.closest("input,textarea,select"))
+      : false;
+    if (inEditor && !isTyping) {
       if ((event.ctrlKey || event.metaKey) && key === "z") {
         event.preventDefault();
         if (event.shiftKey) redoEditor();
@@ -1383,7 +1521,7 @@
       }
     }
     const lane = KEYS.indexOf(key);
-    if (lane < 0 || event.repeat || event.target.matches("input,textarea,select")) return;
+    if (lane < 0 || event.repeat || isTyping) return;
     if ($("#gameOverlay").classList.contains("open")) {
       event.preventDefault();
       hitLane(lane);
@@ -1455,7 +1593,7 @@
 
   const init = async () => {
     readSettings();
-    await Promise.all([loadPlayers(),restoreEditor()]);
+    await Promise.all([loadPlayers(), restoreEditor(), loadOfficialCharts()]);
   };
   init();
 })();
