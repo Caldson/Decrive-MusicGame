@@ -28,6 +28,8 @@
   const STATS_KEY = "decriveStats";
   const GUEST = { name: "GUEST", money: "0.00" };
 
+  window.DECRIVE_ACCOUNT_BUILD = "1.3.1";
+
   const state = {
     loggedIn: false,
     login: "",
