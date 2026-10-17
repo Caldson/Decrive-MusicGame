@@ -374,6 +374,7 @@
     $$(".nav-item").forEach(button => button.classList.toggle("active", button.dataset.view === name));
     $("#crumbTitle").textContent = titles[name];
     if (name === "editor") drawTimeline();
+    else if (typeof stopEditorPlayback === "function") stopEditorPlayback();
   };
 
   $$(".nav-item").forEach(button => button.addEventListener("click", () => openView(button.dataset.view)));
@@ -526,7 +527,21 @@
   $("#uploadChart").addEventListener("click", () => writeChartToPlayersFolder("editor"));
 
   let editorNotes = [];
-  const timelineSeconds = 120;
+  let editorPlayhead = 0;
+  let editorHistory = [];
+  let editorFuture = [];
+  const EDITOR_HISTORY_LIMIT = 60;
+
+  const editorPlayback = {
+    playing: false,
+    raf: 0,
+    audio: null,
+    audioUrl: "",
+    context: null,
+    startedAt: 0,
+    nextBeat: 0
+  };
+
   const saveEditorDraft = () => {
     const draft = {
       title:$("#chartTitle").value, artist:$("#chartArtist").value,
@@ -539,79 +554,338 @@
   const saveEditorMedia = () => writeStored("editor-media", editorMedia)
     .catch(error => notify(`草稿素材保存失败：${error.message}`, "error"));
 
+  const editorBpm = () => Math.max(40, Math.min(300, Number($("#chartBpm").value) || 120));
+  const editorBeatMs = () => 60000 / editorBpm();
+  const editorBeatsPerBar = () => {
+    const beats = Number(String($("#chartMeter").value || "4/4").split("/")[0]);
+    return Number.isFinite(beats) && beats > 0 ? beats : 4;
+  };
+  const editorSnapDivision = () => Number($("#editorSnap").value) || 0;
+
+  const snapEditorTime = (timeMs) => {
+    const division = editorSnapDivision();
+    const value = Math.max(0, timeMs);
+    if (division <= 0) return Math.round(value);
+    const step = editorBeatMs() / division;
+    return Math.round(value / step) * step;
+  };
+
+  const editorSpanMs = () => {
+    const autoSpan = Math.max(
+      editorBeatMs() * editorBeatsPerBar() * 8,
+      (editorNotes.at(-1)?.timeMs ?? 0) + editorBeatMs() * 4
+    );
+    const chosen = $("#editorZoom").value;
+    const seconds = chosen === "auto" ? Math.ceil(autoSpan / 1000) : Number(chosen) || 30;
+    return Math.max(4000, seconds * 1000);
+  };
+
+  const formatEditorTime = (ms) => {
+    const total = Math.max(0, ms) / 1000;
+    const minutes = Math.floor(total / 60);
+    const seconds = total - minutes * 60;
+    return `${String(minutes).padStart(2,"0")}:${seconds.toFixed(3).padStart(6,"0")}`;
+  };
+
+  const snapshotEditor = () => editorNotes.map(note => ({...note}));
+
+  const syncEditorHistoryButtons = () => {
+    $("#undoTap")?.classList.toggle("active", editorHistory.length > 0);
+    $("#redoTap")?.classList.toggle("active", editorFuture.length > 0);
+  };
+
+  const pushEditorHistory = () => {
+    editorHistory.push(snapshotEditor());
+    if (editorHistory.length > EDITOR_HISTORY_LIMIT) editorHistory.shift();
+    editorFuture = [];
+    syncEditorHistoryButtons();
+  };
+
+  const applyEditorNotes = notes => {
+    editorNotes = notes.map(note => ({lane:Number(note.lane), timeMs:Math.max(0, Math.round(note.timeMs))}));
+    editorNotes.sort((a,b) => a.timeMs-b.timeMs || a.lane-b.lane);
+    updateEditor();
+  };
+
+  const undoEditor = () => {
+    if (!editorHistory.length) return;
+    editorFuture.push(snapshotEditor());
+    applyEditorNotes(editorHistory.pop());
+  };
+
+  const redoEditor = () => {
+    if (!editorFuture.length) return;
+    editorHistory.push(snapshotEditor());
+    applyEditorNotes(editorFuture.pop());
+  };
+
+  const updatePlayheadNode = () => {
+    const span = editorSpanMs();
+    const ratio = Math.max(0, Math.min(100, editorPlayhead / span * 100));
+    const node = $("#laneTrack .playhead");
+    if (node) node.style.left = `${ratio}%`;
+    const label = $("#editorTime");
+    if (label) label.textContent = formatEditorTime(editorPlayhead);
+  };
+
+  const seekEditor = timeMs => {
+    editorPlayhead = Math.max(0, Math.min(editorSpanMs(), timeMs));
+    if (editorPlayback.audio) editorPlayback.audio.currentTime = editorPlayhead / 1000;
+    if (editorPlayback.playing) editorPlayback.startedAt = performance.now() - editorPlayhead;
+    updatePlayheadNode();
+  };
+
+  const stopEditorPlayback = () => {
+    editorPlayback.playing = false;
+    cancelAnimationFrame(editorPlayback.raf);
+    editorPlayback.raf = 0;
+    if (editorPlayback.audio) editorPlayback.audio.pause();
+    $("#editorPlayIcon") && ($("#editorPlayIcon").textContent = "▶");
+    $("#editorPlay")?.classList.remove("active");
+  };
+
+  const tickEditorPlayback = () => {
+    if (!editorPlayback.playing) return;
+    const span = editorSpanMs();
+    editorPlayhead = editorPlayback.audio
+      ? editorPlayback.audio.currentTime * 1000
+      : performance.now() - editorPlayback.startedAt;
+
+    if (!editorPlayback.audio && editorPlayback.context) {
+      const beat = editorBeatMs();
+      const beatsPerBar = editorBeatsPerBar();
+      const ctx = editorPlayback.context;
+      while (editorPlayback.nextBeat * beat <= editorPlayhead + 90) {
+        const index = editorPlayback.nextBeat;
+        const when = ctx.currentTime + Math.max(0, (index * beat - editorPlayhead) / 1000);
+        beep(ctx, when, index % beatsPerBar === 0 ? 720 : 470, .05, .03);
+        editorPlayback.nextBeat += 1;
+      }
+    }
+
+    updatePlayheadNode();
+    if (editorPlayhead >= span) {
+      editorPlayhead = span;
+      updatePlayheadNode();
+      stopEditorPlayback();
+      return;
+    }
+    editorPlayback.raf = requestAnimationFrame(tickEditorPlayback);
+  };
+
+  const toggleEditorPlayback = async () => {
+    if (editorPlayback.playing) { stopEditorPlayback(); return; }
+    if (editorPlayhead >= editorSpanMs() - 60) editorPlayhead = 0;
+
+    if (editorMedia.music) {
+      try {
+        if (!editorPlayback.audioUrl) editorPlayback.audioUrl = URL.createObjectURL(editorMedia.music);
+        if (!editorPlayback.audio) {
+          editorPlayback.audio = new Audio(editorPlayback.audioUrl);
+          editorPlayback.audio.preload = "auto";
+          editorPlayback.audio.addEventListener("ended", () => stopEditorPlayback());
+        }
+        editorPlayback.audio.currentTime = editorPlayhead / 1000;
+        await editorPlayback.audio.play();
+      } catch (error) {
+        notify("浏览器阻止了音乐播放，请再点一次播放。", "error");
+        return;
+      }
+    } else {
+      try {
+        editorPlayback.context = editorPlayback.context || audioContext();
+        await editorPlayback.context.resume();
+      } catch (error) {
+        notify(`节拍器不可用：${error.message}`, "error");
+        return;
+      }
+    }
+
+    editorPlayback.playing = true;
+    editorPlayback.startedAt = performance.now() - editorPlayhead;
+    editorPlayback.nextBeat = Math.ceil(editorPlayhead / editorBeatMs());
+    const icon = $("#editorPlayIcon");
+    if (icon) icon.textContent = "❚❚";
+    $("#editorPlay")?.classList.add("active");
+    tickEditorPlayback();
+  };
+
+  const attachNoteDrag = (marker, index) => {
+    let dragging = false;
+    let moved = false;
+
+    const onMove = event => {
+      if (!dragging) return;
+      const track = $("#laneTrack");
+      const bounds = track.getBoundingClientRect();
+      const span = editorSpanMs();
+      const timeMs = snapEditorTime((event.clientX - bounds.left) / bounds.width * span);
+      const lane = Math.max(0, Math.min(3, Math.floor((event.clientY - bounds.top) / bounds.height * 4)));
+      marker.dataset.pendingTime = String(timeMs);
+      marker.dataset.pendingLane = String(lane);
+      marker.style.left = `${Math.min(100, timeMs / span * 100)}%`;
+      const rows = track.querySelectorAll(".lane-row");
+      if (rows[lane]) rows[lane].append(marker);
+      marker.classList.add("dragging");
+      moved = true;
+    };
+
+    const onUp = () => {
+      document.removeEventListener("pointermove", onMove, true);
+      document.removeEventListener("pointerup", onUp, true);
+      if (!dragging) return;
+      dragging = false;
+      marker.classList.remove("dragging");
+
+      if (!moved) {
+        pushEditorHistory();
+        editorNotes.splice(index, 1);
+        updateEditor();
+        return;
+      }
+
+      const note = editorNotes[index];
+      const timeMs = Number(marker.dataset.pendingTime ?? note.timeMs);
+      const lane = Number(marker.dataset.pendingLane ?? note.lane);
+      if (timeMs === note.timeMs && lane === note.lane) { updateEditor(); return; }
+      pushEditorHistory();
+      editorNotes[index] = {lane, timeMs};
+      editorNotes.sort((a,b) => a.timeMs-b.timeMs || a.lane-b.lane);
+      updateEditor();
+    };
+
+    marker.addEventListener("pointerdown", event => {
+      if (event.button !== 0) return;
+      event.stopPropagation();
+      event.preventDefault();
+      const note = editorNotes[index];
+      if (!note) return;
+      dragging = true;
+      moved = false;
+      marker.dataset.pendingTime = String(note.timeMs);
+      marker.dataset.pendingLane = String(note.lane);
+      document.addEventListener("pointermove", onMove, true);
+      document.addEventListener("pointerup", onUp, true);
+    });
+  };
+
   const drawTimeline = () => {
     const track = $("#laneTrack");
+    const span = editorSpanMs();
+    const beatPercent = editorBeatMs() / span * 100;
+    const barPercent = beatPercent * editorBeatsPerBar();
     track.replaceChildren();
+    track.style.background = [
+      `repeating-linear-gradient(90deg, rgba(112,230,208,.16) 0, rgba(112,230,208,.16) 1px, transparent 1px, transparent ${barPercent}%)`,
+      `repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0, rgba(255,255,255,.06) 1px, transparent 1px, transparent ${beatPercent}%)`
+    ].join(",");
+
     const ruler = $("#timelineRuler");
     ruler.replaceChildren();
-    for (let second = 0; second <= timelineSeconds; second += 15) {
+    const barMs = editorBeatMs() * editorBeatsPerBar();
+    const totalBars = Math.max(1, Math.ceil(span / barMs));
+    const step = Math.max(1, Math.ceil(totalBars / 24));
+    for (let bar = 0; bar <= totalBars; bar += step) {
       const mark = document.createElement("span");
-      mark.style.left = `${second / timelineSeconds * 100}%`;
-      mark.textContent = `${second}s`;
+      mark.style.left = `${Math.min(100, bar * barMs / span * 100)}%`;
+      mark.textContent = String(bar + 1);
       ruler.append(mark);
     }
+
     for (let lane = 0; lane < 4; lane += 1) {
       const row = document.createElement("div");
       row.className = "lane-row";
       row.dataset.lane = String(lane);
+      row.style.background = "none";
       track.append(row);
     }
+
     const rows = track.querySelectorAll(".lane-row");
-    for (const [index,note] of editorNotes.entries()) {
-      const row = rows[note.lane];
+    for (const [index, note] of editorNotes.entries()) {
       const marker = document.createElement("button");
+      marker.type = "button";
       marker.className = `timeline-note lane-${note.lane}`;
-      marker.style.left = `${Math.min(99, note.timeMs / (timelineSeconds * 1000) * 100)}%`;
-      marker.title = `${KEYS[note.lane].toUpperCase()} · ${(note.timeMs/1000).toFixed(2)}s · 点击删除`;
+      marker.style.left = `${Math.min(100, note.timeMs / span * 100)}%`;
+      marker.title = `${KEYS[note.lane].toUpperCase()} · ${(note.timeMs/1000).toFixed(3)}s · 拖拽移动 / 单击删除`;
       marker.dataset.index = String(index);
-      marker.addEventListener("click", event => {
-        event.stopPropagation();
-        editorNotes.splice(Number(marker.dataset.index), 1);
-        updateEditor();
-      });
-      row.append(marker);
+      attachNoteDrag(marker, index);
+      rows[note.lane].append(marker);
     }
+
     const playhead = document.createElement("div");
     playhead.className = "playhead";
+    playhead.style.left = `${Math.min(100, editorPlayhead / span * 100)}%`;
     track.append(playhead);
+
     $("#tapCount").textContent = String(editorNotes.length);
   };
 
-  const addEditorNote = (lane, timeMs) => {
+  const addEditorNote = (lane, timeMs, { keepHistory = true } = {}) => {
     if (editorNotes.length >= 50000) { notify("单张谱面最多添加 50000 个音符。", "error"); return; }
-    editorNotes.push({lane:Number(lane), timeMs:Math.max(0,Math.round(timeMs))});
-    editorNotes.sort((a,b) => a.timeMs-b.timeMs);
+    if (keepHistory) pushEditorHistory();
+    editorNotes.push({lane:Number(lane), timeMs:snapEditorTime(timeMs)});
+    editorNotes.sort((a,b) => a.timeMs-b.timeMs || a.lane-b.lane);
     updateEditor();
   };
 
+  const addEditorNoteAtCursor = lane => {
+    if (editorPlayback.playing) { addEditorNote(lane, editorPlayhead); return; }
+    const division = Math.max(1, editorSnapDivision());
+    const step = editorBeatMs() / division;
+    const last = editorNotes.at(-1)?.timeMs ?? -step;
+    addEditorNote(lane, last + step);
+  };
+
   const updateEditor = () => {
-    const bpm = Number($("#chartBpm").value);
+    const bpm = editorBpm();
     $("#previewTitle").textContent = $("#chartTitle").value || "Untitled track";
     $("#previewBpm").textContent = `${bpm} BPM · ${$("#chartMeter").value}`;
     $("#bpmOutput").value = bpm;
     $("#bpmNumber").value = bpm;
     $("#chartBpm").value = bpm;
     drawTimeline();
+    updatePlayheadNode();
+    const duration = $("#editorDuration");
+    if (duration) duration.textContent = `${((editorNotes.at(-1)?.timeMs ?? 0)/1000).toFixed(1)}s`;
+    const status = $("#editorStatusText");
+    if (status) {
+      status.textContent = editorNotes.length
+        ? `草稿已自动保存 · ${editorNotes.length} 个音符`
+        : "草稿已自动保存";
+    }
     saveEditorDraft();
+    syncEditorHistoryButtons();
   };
 
   $$(".preview-keys button").forEach(button => button.addEventListener("click", () => {
-    const spacing = 60000 / Number($("#chartBpm").value);
-    const last = editorNotes.at(-1)?.timeMs ?? -spacing;
-    addEditorNote(button.dataset.lane, last + spacing);
+    addEditorNoteAtCursor(button.dataset.lane);
   }));
+
   $("#laneTrack").addEventListener("click", event => {
     if (event.target.closest(".timeline-note")) return;
     const row = event.target.closest(".lane-row");
     if (!row) return;
     const bounds = $("#laneTrack").getBoundingClientRect();
-    const timeMs = ((event.clientX - bounds.left) / bounds.width) * timelineSeconds * 1000;
-    addEditorNote(row.dataset.lane, timeMs);
+    addEditorNote(row.dataset.lane, (event.clientX - bounds.left) / bounds.width * editorSpanMs());
   });
-  $("#undoTap").addEventListener("click", () => { if (editorNotes.length) { editorNotes.pop(); updateEditor(); } });
+
+  $("#timelineRuler").addEventListener("click", event => {
+    const bounds = $("#laneTrack").getBoundingClientRect();
+    seekEditor((event.clientX - bounds.left) / bounds.width * editorSpanMs());
+  });
+
+  $("#editorPlay").addEventListener("click", toggleEditorPlayback);
+  $("#editorSnap").addEventListener("change", updateEditor);
+  $("#editorZoom").addEventListener("change", updateEditor);
+  $("#undoTap").addEventListener("click", undoEditor);
+  $("#redoTap").addEventListener("click", redoEditor);
   $("#clearTaps").addEventListener("click", () => {
     if (!editorNotes.length) return;
-    if (window.confirm("清空当前谱面的所有音符？")) { editorNotes = []; updateEditor(); }
+    if (window.confirm("清空当前谱面的所有音符？")) {
+      pushEditorHistory();
+      editorNotes = [];
+      updateEditor();
+    }
   });
   ["chartTitle","chartArtist","chartDifficulty","chartOffset","chartMeter"].forEach(id => $(`#${id}`).addEventListener("input", updateEditor));
   $("#chartBpm").addEventListener("input", updateEditor);
@@ -629,8 +903,11 @@
     editorMedia.music = file;
     editorMedia.musicName = file.name;
     $("#musicFileName").textContent = file.name;
+    if (editorPlayback.audio) { editorPlayback.audio.pause(); editorPlayback.audio = null; }
+    if (editorPlayback.audioUrl) { URL.revokeObjectURL(editorPlayback.audioUrl); editorPlayback.audioUrl = ""; }
+    stopEditorPlayback();
     await saveEditorMedia();
-    notify("音乐已添加到谱面草稿。");
+    notify("音乐已添加到谱面草稿，点播放即可跟着音乐打点。");
   });
   $("#backgroundInput").addEventListener("change", async event => {
     const [file] = event.target.files;
@@ -662,7 +939,11 @@
         $("#chartDifficulty").value = draft.difficulty || 3.4;
         $("#chartOffset").value = draft.offset || 0;
         editorNotes = Array.isArray(draft.notes) ? draft.notes : [];
+        editorNotes.sort((a,b) => a.timeMs-b.timeMs || a.lane-b.lane);
       }
+      editorHistory = [];
+      editorFuture = [];
+      editorPlayhead = 0;
       const media = await readStored("editor-media");
       if (media) {
         editorMedia = media;
@@ -789,10 +1070,6 @@
     if (packageRecord) activeChart.id = packageRecord.id;
     $("#gameTitle").textContent = activeChart.title;
     $("#gameMeta").textContent = `${activeChart.bpm} BPM · ${Number(activeChart.difficulty).toFixed(1)}`;
-    $("#gameScore").textContent = "0000000";
-    $("#gameCombo").textContent = "0";
-    $("#judgement").textContent = "READY?";
-    $("#resultCard").hidden = true;
     $("#gameArtBg").style.backgroundImage = "";
     if (gameBackgroundUrl) URL.revokeObjectURL(gameBackgroundUrl);
     gameBackgroundUrl = null;
@@ -827,6 +1104,12 @@
 
   const startGameRun = async () => {
     cancelAnimationFrame(gameFrame);
+    $("#resultCard").hidden = true;
+    $("#gameScore").textContent = "0000000";
+    $("#gameCombo").textContent = "0";
+    $("#judgement").textContent = "READY?";
+    $("#gameProgress").style.width = "0%";
+    $("#fallingNotes").replaceChildren();
     if (gameAudio) { gameAudio.pause(); gameAudio.src = ""; gameAudio = null; }
     if (gameAudioUrl) { URL.revokeObjectURL(gameAudioUrl); gameAudioUrl = null; }
     if (gameSynth) { await gameSynth.close().catch(() => {}); gameSynth = null; }
@@ -1061,14 +1344,33 @@
   document.addEventListener("keydown", event => {
     if (event.key === "Escape" && $("#gameOverlay").classList.contains("open")) { closeGame(); return; }
     const key = event.key.toLowerCase();
+    const inEditor = $("#view-editor").classList.contains("active");
+    if (inEditor && !event.target.matches("input,textarea,select")) {
+      if ((event.ctrlKey || event.metaKey) && key === "z") {
+        event.preventDefault();
+        if (event.shiftKey) redoEditor();
+        else undoEditor();
+        return;
+      }
+      if ((event.ctrlKey || event.metaKey) && key === "y") {
+        event.preventDefault();
+        redoEditor();
+        return;
+      }
+      if (event.code === "Space" && !event.repeat) {
+        event.preventDefault();
+        toggleEditorPlayback();
+        return;
+      }
+    }
     const lane = KEYS.indexOf(key);
     if (lane < 0 || event.repeat || event.target.matches("input,textarea,select")) return;
     if ($("#gameOverlay").classList.contains("open")) {
       event.preventDefault();
       hitLane(lane);
       pressedKeys.add(key);
-    } else if ($("#view-editor").classList.contains("active")) {
-      addEditorNote(lane,(editorNotes.at(-1)?.timeMs ?? 0)+60000/Number($("#chartBpm").value));
+    } else if (inEditor) {
+      addEditorNoteAtCursor(lane);
     }
   });
   document.addEventListener("keyup", event => pressedKeys.delete(event.key.toLowerCase()));

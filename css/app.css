@@ -44,3 +44,22 @@
 .vtx-modal-primary{border:1px solid #2f6f67;background:linear-gradient(150deg,#1c4a44,#123029);color:var(--cyan);font-weight:700}
 .vtx-modal-primary:hover:not(:disabled){filter:brightness(1.14)}
 .vtx-modal-primary:disabled{opacity:.55;cursor:not-allowed}
+/* ===== 制谱器时间轴增强 ===== */
+.timeline-header{gap:10px}
+.timeline-tools{display:flex;align-items:center;gap:9px}
+.timeline-play{width:24px;height:24px;border:1px solid #2d3346;border-radius:6px;background:#151a26;color:var(--cyan);font-size:9px;display:grid;place-items:center;cursor:pointer;transition:border-color .15s,background .15s,color .15s}
+.timeline-play:hover{border-color:var(--cyan);background:#12211f}
+.timeline-play.active{border-color:var(--pink);color:var(--pink);background:#241620}
+.timeline-time{font:9px var(--mono);color:#9aa3b6;letter-spacing:.4px;min-width:64px}
+.timeline-select{display:flex;align-items:center;gap:5px;font-size:8px;color:#7d8497;letter-spacing:.3px}
+.timeline-select select{height:22px;padding:0 6px;border:1px solid #2a3042;border-radius:6px;background:#131824;color:#c3cadb;font:9px var(--mono);cursor:pointer}
+.timeline-select select:focus{outline:none;border-color:#3f7f76}
+.timeline-header #editorDuration{font:8px var(--mono);color:#6f7789;letter-spacing:.6px}
+.lane-row{transition:background .15s}
+.lane-row:hover{box-shadow:inset 0 0 0 1px rgba(112,230,208,.18)}
+.timeline-note{cursor:grab;transition:box-shadow .12s,opacity .12s}
+.timeline-note:active{cursor:grabbing}
+.timeline-note.dragging{opacity:.85;box-shadow:0 0 0 2px rgba(248,127,177,.55)}
+.timeline-note.selected{box-shadow:0 0 0 2px #ffdb83}
+.timeline-ruler{cursor:pointer}
+.icon-button.active{border-color:#3f7f76;color:var(--cyan)}

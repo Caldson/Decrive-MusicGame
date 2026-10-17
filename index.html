@@ -88,22 +88,48 @@
         </div>
         <div class="editor-layout">
           <div class="editor-main">
-            <div class="editor-toolbar"><div class="editor-status"><span class="status-dot"></span><span>草稿已自动保存</span></div><div class="toolbar-actions"><button class="icon-button" id="undoTap" title="撤销最近添加">↶</button><button class="icon-button" id="clearTaps" title="清空所有音符">⌫</button></div></div>
+            <div class="editor-toolbar"><div class="editor-status"><span class="status-dot"></span><span id="editorStatusText">草稿已自动保存</span></div><div class="toolbar-actions"><button class="icon-button" id="undoTap" title="撤销（Ctrl+Z）">↶</button><button class="icon-button" id="redoTap" title="重做（Ctrl+Shift+Z）">↷</button><button class="icon-button" id="clearTaps" title="清空所有音符">⌫</button></div></div>
             <div class="editor-preview" id="editorPreview">
               <div class="editor-grid"></div><div class="preview-beat beat-a"></div><div class="preview-beat beat-b"></div>
               <div class="editor-preview-content"><span class="preview-label">CHART PREVIEW</span><strong id="previewTitle">Untitled track</strong><span class="preview-subtitle" id="previewBpm">120 BPM · 4/4</span></div>
               <img id="backgroundPreview" alt="" hidden>
               <div class="preview-keys"><button data-lane="0" title="添加 D 轨音符">D</button><button data-lane="1" title="添加 F 轨音符">F</button><button data-lane="2" title="添加 J 轨音符">J</button><button data-lane="3" title="添加 K 轨音符">K</button></div>
             </div>
-            <div class="timeline-header"><span>音符时间轴</span><span><b id="tapCount">0</b> NOTES</span></div>
+            <div class="timeline-header">
+              <div class="timeline-tools">
+                <button class="timeline-play" id="editorPlay" type="button" title="试听 / 暂停（空格）"><span id="editorPlayIcon">▶</span></button>
+                <span class="timeline-time" id="editorTime">00:00.000</span>
+                <label class="timeline-select">吸附
+                  <select id="editorSnap">
+                    <option value="1">1/4 拍</option>
+                    <option value="2" selected>1/8 拍</option>
+                    <option value="4">1/16 拍</option>
+                    <option value="0">关闭</option>
+                  </select>
+                </label>
+              </div>
+              <div class="timeline-tools">
+                <label class="timeline-select">视图
+                  <select id="editorZoom">
+                    <option value="auto" selected>自动</option>
+                    <option value="15">15 秒</option>
+                    <option value="30">30 秒</option>
+                    <option value="60">60 秒</option>
+                    <option value="120">120 秒</option>
+                  </select>
+                </label>
+                <span><b id="tapCount">0</b> NOTES</span>
+                <span id="editorDuration">00:00</span>
+              </div>
+            </div>
             <div class="timeline" id="timeline">
               <div class="timeline-ruler" id="timelineRuler"></div>
               <div class="timeline-lanes">
-                <div class="lane-labels"><span>R</span><span>F</span><span>I</span><span>J</span></div>
+                <div class="lane-labels"><span>D</span><span>F</span><span>J</span><span>K</span></div>
                 <div class="lane-track" id="laneTrack"><div class="playhead"></div></div>
               </div>
             </div>
-            <div class="editor-help"><span>＋ 点击预览区的轨道按键添加音符</span><span>⌫ 点击音符即可删除</span><span>导出包含 chart.json 与 bg.png</span></div>
+            <div class="editor-help"><span>＋ 点击轨道放置音符（按吸附网格对齐）</span><span>↔ 拖拽音符移动，单击删除</span><span>空格 试听，D F J K 在播放头放置</span><span>⌘/Ctrl + Z 撤销</span></div>
           </div>
           <aside class="editor-controls">
             <div class="control-card"><div class="control-card-heading"><span>01</span><h3>谱面信息</h3></div>
@@ -119,7 +145,7 @@
               <label class="upload-field" for="musicInput"><span class="upload-symbol">♫</span><span><strong id="musicFileName">添加音乐</strong><small>MP3 / WAV / OGG · 最大 100 MB</small></span><span class="upload-plus">＋</span></label><input class="hidden-input" id="musicInput" type="file" accept="audio/*">
               <label class="upload-field" for="backgroundInput"><span class="upload-symbol">▧</span><span><strong id="backgroundFileName">添加背景</strong><small>PNG / JPG · 推荐 16:9</small></span><span class="upload-plus">＋</span></label><input class="hidden-input" id="backgroundInput" type="file" accept="image/png,image/jpeg,image/webp">
             </div>
-            <div class="editor-footnote"><span>ⓘ</span><p>点击时间轴或下方按键，即可在当前 BPM 下放置音符。导出后可在玩家谱面中游玩。</p></div>
+            <div class="editor-footnote"><span>ⓘ</span><p>空格试听（有音乐放音乐，没有则用节拍器），播放时按 <b>D F J K</b> 在播放头处放置音符；点击标尺定位，拖拽音符调整时间与轨道。</p></div>
           </aside>
         </div>
       </section>
