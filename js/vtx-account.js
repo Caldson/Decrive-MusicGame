@@ -24,11 +24,12 @@
   const BOOST_PRICE = "5.00";
   const BOOST_PARTY = "Decrive 音游";
   const BOOST_DESC = "全 PERFECT 道具 ×1";
-  const BOOST_KEY = "decriveBoost";
-  const STATS_KEY = "decriveStats";
+  const GAME = "Decrive";
+  const BOOST_KEY = "boost";
+  const STATS_KEY = "stats";
   const GUEST = { name: "GUEST", money: "0.00" };
 
-  window.DECRIVE_ACCOUNT_BUILD = "1.3.1";
+  window.DECRIVE_ACCOUNT_BUILD = "1.3.2";
 
   const state = {
     loggedIn: false,
@@ -63,7 +64,7 @@
 
   const sdk = () => (typeof window.VTX !== "undefined" ? window.VTX : null);
 
-  const SDK_VERSION = "4.3";
+  const SDK_VERSION = "4.4";
 
   const loadSdk = () => new Promise((resolve) => {
     if (sdk()) { resolve(true); return; }
@@ -97,10 +98,21 @@
     return Number.isFinite(count) && count > 0 ? Math.floor(count) : 0;
   };
 
+  // 账户 data 按游戏名分区：data["Decrive"] = { boost, stats }
+  const gameData = () => {
+    const ns = state.data[GAME];
+    return ns && typeof ns === "object" && !Array.isArray(ns) ? ns : {};
+  };
+
+  const mergeGameData = (patch) => {
+    state.data = { ...state.data, [GAME]: { ...gameData(), ...patch } };
+  };
+
   const persistBoost = async (count) => {
     const vtx = sdk();
     if (!vtx) return;
-    await vtx.setData({ [BOOST_KEY]: count });
+    await vtx.setData(GAME, { [BOOST_KEY]: count });
+    mergeGameData({ [BOOST_KEY]: count });
   };
 
   const render = () => {
@@ -151,7 +163,7 @@
     state.username = String(username || login || GUEST.name);
     state.money = String(money ?? "0.00");
     state.data = data && typeof data === "object" && !Array.isArray(data) ? data : {};
-    state.boost = normalizeBoost(state.data[BOOST_KEY]);
+    state.boost = normalizeBoost(gameData()[BOOST_KEY]);
     render();
   };
 
@@ -333,7 +345,7 @@
     const vtx = sdk();
     if (!vtx || !state.loggedIn) return false;
 
-    const previous = state.data[STATS_KEY];
+    const previous = gameData()[STATS_KEY];
     const stats = previous && typeof previous === "object" && !Array.isArray(previous) ? previous : {};
     const charts = stats.charts && typeof stats.charts === "object" && !Array.isArray(stats.charts) ? stats.charts : {};
 
@@ -366,8 +378,8 @@
     };
 
     try {
-      await vtx.setData({ [STATS_KEY]: payload });
-      state.data[STATS_KEY] = payload;
+      await vtx.setData(GAME, { [STATS_KEY]: payload });
+      mergeGameData({ [STATS_KEY]: payload });
       return true;
     } catch (error) {
       toast(`成绩同步失败：${describeError(error)}`, "error");
