@@ -29,7 +29,7 @@
   const STATS_KEY = "stats";
   const GUEST = { name: "GUEST", money: "0.00" };
 
-  window.DECRIVE_ACCOUNT_BUILD = "1.3.2";
+  window.DECRIVE_ACCOUNT_BUILD = "1.3.3";
 
   const state = {
     loggedIn: false,
